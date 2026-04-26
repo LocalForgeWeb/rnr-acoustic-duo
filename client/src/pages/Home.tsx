@@ -1,7 +1,7 @@
 /* ============================================================
    R & R Acoustic Duo — Home Page
    Design: "Golden Hour Americana" — Editorial Folk / Americana
-   Members: Rebecca Barnes (vocals) & Ronnie Burton (guitar)
+   Members: Rebecca Barnes (vocals) & Ron Butron (guitar)
    Features: Dropdown nav, real logo, real duo photo, animated sections
    ============================================================ */
 
@@ -145,7 +145,7 @@ const NAV_ITEMS = [
     dropdown: [
       { label: "Our Story", href: "#about" },
       { label: "Rebecca Barnes", href: "#members" },
-      { label: "Ronnie Burton", href: "#members" },
+      { label: "Ron Butron", href: "#members" },
     ],
   },
   {
@@ -357,7 +357,7 @@ function Navigation() {
             </button>
             <img src={IMAGES.logoLight} alt="R & R logo" className="h-16 w-auto mb-4" />
             <p className="font-body text-xs tracking-[0.25em] uppercase text-[oklch(0.75_0.02_75)] -mt-4 mb-4">
-              Rebecca Barnes & Ronnie Burton
+              Rebecca Barnes & Ron Butron
             </p>
             {NAV_ITEMS.map((item) => (
               <div key={item.label} className="text-center">
@@ -453,7 +453,7 @@ function HeroSection() {
             transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
             Rebecca Barnes<br />
-            <span className="italic font-normal text-[oklch(0.88_0.025_75)]">&amp; Ronnie Burton</span>
+            <span className="italic font-normal text-[oklch(0.88_0.025_75)]">&amp; Ron Butron</span>
           </motion.h1>
 
           <motion.div
@@ -534,7 +534,7 @@ function AboutSection() {
               <div className="absolute -top-4 -left-4 w-full h-full border-2 border-[oklch(0.68_0.15_65/0.35)] rounded-sm pointer-events-none" />
               <img
                 src={IMAGES.duoPhoto}
-                alt="Rebecca Barnes and Ronnie Burton — R & R Acoustic Duo"
+                alt="Rebecca Barnes and Ron Butron — R & R Acoustic Duo"
                 className="relative w-full h-[520px] object-cover object-top rounded-sm shadow-2xl"
               />
               {/* Name overlay */}
@@ -548,7 +548,7 @@ function AboutSection() {
                   <div className="w-px bg-[oklch(0.68_0.15_65/0.3)]" />
                   <div className="text-center">
                     <Guitar size={16} className="text-[oklch(0.68_0.15_65)] mx-auto mb-1" />
-                    <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Ronnie Burton</p>
+                    <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Ron Butron</p>
                     <p className="font-body text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-wider">Acoustic Guitar</p>
                   </div>
                 </div>
@@ -579,7 +579,7 @@ function AboutSection() {
             <div className="grid grid-cols-2 gap-4 mb-8">
               {[
                 { name: "Rebecca Barnes", role: "Vocals & Harmonies", icon: <Mic2 size={20} />, desc: "Warm, expressive voice that fills any room with emotion and energy." },
-                { name: "Ronnie Burton", role: "Acoustic Guitar", icon: <Guitar size={20} />, desc: "Masterful fingerpicking and rhythm guitar that anchors every performance." },
+                { name: "Ron Butron", role: "Acoustic Guitar", icon: <Guitar size={20} />, desc: "Masterful fingerpicking and rhythm guitar that anchors every performance." },
               ].map((member) => (
                 <div key={member.name} className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-4 hover:border-[oklch(0.68_0.15_65/0.5)] hover:shadow-md transition-all duration-300">
                   <div className="text-[oklch(0.68_0.15_65)] mb-2">{member.icon}</div>
@@ -978,7 +978,7 @@ function ContactSection() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Guitar size={14} className="text-[oklch(0.68_0.15_65)]" />
-                    <p className="font-body text-sm text-[oklch(0.96_0.025_75)]">Ronnie Burton — Acoustic Guitar</p>
+                    <p className="font-body text-sm text-[oklch(0.96_0.025_75)]">Ron Butron — Acoustic Guitar</p>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-[oklch(0.96_0.025_75/0.1)]">
@@ -1106,7 +1106,7 @@ function Footer() {
           <div>
             <img src={IMAGES.logoLight} alt="R & R Acoustic Duo" className="h-12 w-auto mb-2" />
             <span className="font-body text-[0.6rem] tracking-[0.2em] uppercase text-[oklch(0.55_0.02_60)] block mb-4">
-              Rebecca Barnes & Ronnie Burton
+              Rebecca Barnes & Ron Butron
             </span>
             <p className="font-body text-sm leading-relaxed text-[oklch(0.65_0.02_70)]">
               Warm, intimate acoustic music for wineries, wine bars, restaurants, and private events throughout the San Francisco Bay Area.
@@ -1149,7 +1149,7 @@ function Footer() {
             </div>
             <div>
               <p className="font-body text-xs text-[oklch(0.55_0.02_60)] mb-1">Members:</p>
-              <p className="font-body text-xs text-[oklch(0.55_0.02_60)]">Rebecca Barnes · Ronnie Burton</p>
+              <p className="font-body text-xs text-[oklch(0.55_0.02_60)]">Rebecca Barnes · Ron Butron</p>
               <p className="font-body text-xs text-[oklch(0.45_0.02_50)] mt-2">
                 Morgan Hill · Gilroy · Hollister · Bay Area
               </p>
@@ -1161,7 +1161,7 @@ function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-[oklch(0.45_0.02_55)]">
-            © {new Date().getFullYear()} R & R Acoustic Duo — Rebecca Barnes & Ronnie Burton. All rights reserved.
+            © {new Date().getFullYear()} R & R Acoustic Duo — Rebecca Barnes & Ron Butron. All rights reserved.
           </p>
           <p className="font-body text-xs text-[oklch(0.45_0.02_55)]">
             Bay Area Acoustic Music · Available for Hire
