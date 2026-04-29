@@ -1166,6 +1166,17 @@ function Footer() {
           <p className="font-body text-xs text-[oklch(0.45_0.02_55)]">
             Bay Area Acoustic Music · Available for Hire
           </p>
+          <p className="font-body text-xs text-[oklch(0.35_0.02_45)] mt-2 md:mt-0">
+            Website by{" "}
+            <a
+              href="https://localforgeweb.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[oklch(0.45_0.04_50)] hover:text-[oklch(0.68_0.15_65)] transition-colors duration-200 underline-offset-2 hover:underline"
+            >
+              LocalForge
+            </a>
+          </p>
         </div>
       </div>
     </footer>
