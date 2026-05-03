@@ -753,7 +753,7 @@ function CalendarSection() {
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-indexed
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate());
 
   const monthName = new Date(viewYear, viewMonth, 1).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
@@ -795,6 +795,12 @@ function CalendarSection() {
     day === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
 
   const selectedGigs = selectedDay ? (gigsByDay[selectedDay] ?? []) : [];
+  const nextUpcomingGig = data?.upcoming?.[0] ?? null;
+  const panelGigs = selectedGigs.length > 0 ? selectedGigs : (nextUpcomingGig ? [nextUpcomingGig] : []);
+  const panelIsFallback = selectedGigs.length === 0 && panelGigs.length > 0;
+  const panelDate = panelIsFallback && nextUpcomingGig
+    ? new Date(nextUpcomingGig.date + "T12:00:00")
+    : selectedDay ? new Date(viewYear, viewMonth, selectedDay) : new Date();
 
   const formatTime = (gig: { time?: string | null; endTime?: string | null }) => {
     if (!gig.time) return null;
@@ -930,68 +936,72 @@ function CalendarSection() {
                 </div>
               )}
 
-              {/* Selected day event panel */}
-              <AnimatePresence>
-                {selectedDay !== null && (
-                  <motion.div
-                    key={selectedDay}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                    className="border-t border-[oklch(0.88_0.025_70)] overflow-hidden"
-                  >
-                    <div className="p-5">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-display text-lg text-[oklch(0.22_0.05_35)]">
-                          {new Date(viewYear, viewMonth, selectedDay).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-                        </h4>
-                        <button
-                          onClick={() => setSelectedDay(null)}
-                          className="text-[oklch(0.55_0.04_55)] hover:text-[oklch(0.22_0.05_35)] transition-colors p-1"
-                          aria-label="Close"
-                        >
-                          <X size={16} />
-                        </button>
-                      </div>
-                      {selectedGigs.length === 0 ? (
-                        <p className="font-body text-sm text-[oklch(0.55_0.04_55)] italic">No shows scheduled for this day.</p>
+              {/* Always-visible event detail panel */}
+              <div className="border-t border-[oklch(0.88_0.025_70)]">
+                <div className="p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Calendar size={16} className="text-[oklch(0.68_0.15_65)] flex-shrink-0" />
+                    <h4 className="font-display text-lg text-[oklch(0.22_0.05_35)]">
+                      {panelIsFallback ? (
+                        <span className="flex items-center gap-2">
+                          Next Show
+                          <span className="font-body text-sm text-[oklch(0.55_0.04_55)] font-normal">
+                            — {panelDate.toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric" })}
+                          </span>
+                        </span>
                       ) : (
-                        <div className="space-y-3">
-                          {selectedGigs.map(gig => (
-                            <motion.div
-                              key={gig.uid}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              className="flex items-start gap-4 bg-[oklch(0.93_0.02_75)] rounded-sm p-4 border-l-4 border-[oklch(0.68_0.15_65)]"
-                            >
-                              <div className="flex-shrink-0 w-10 h-10 bg-[oklch(0.22_0.05_35)] rounded-sm flex items-center justify-center">
-                                <Music size={16} className="text-[oklch(0.68_0.15_65)]" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-display text-base text-[oklch(0.22_0.05_35)] font-semibold">{gig.title}</p>
-                                {gig.location && (
-                                  <p className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1 mt-0.5">
-                                    <MapPin size={10} /> {gig.location}
-                                  </p>
-                                )}
-                                {formatTime(gig) && (
-                                  <p className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1 mt-0.5">
-                                    <Clock size={10} /> {formatTime(gig)}
-                                  </p>
-                                )}
-                                {gig.description && (
-                                  <p className="font-body text-xs text-[oklch(0.45_0.04_50)] mt-1 leading-relaxed">{gig.description}</p>
-                                )}
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
+                        panelDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
                       )}
+                    </h4>
+                  </div>
+                  {isLoading ? (
+                    <div className="space-y-2">
+                      {[1,2].map(i => <div key={i} className="h-16 rounded-sm bg-[oklch(0.93_0.02_75)] animate-pulse" />)}
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  ) : panelGigs.length === 0 ? (
+                    <div className="flex items-center gap-3 py-2">
+                      <div className="w-10 h-10 bg-[oklch(0.93_0.02_75)] rounded-sm flex items-center justify-center flex-shrink-0">
+                        <Music size={16} className="text-[oklch(0.75_0.02_75)]" />
+                      </div>
+                      <div>
+                        <p className="font-body text-sm text-[oklch(0.55_0.04_55)] italic">No shows scheduled for this day.</p>
+                        <p className="font-body text-xs text-[oklch(0.65_0.02_70)] mt-0.5">Click a day with an amber dot to see show details.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {panelGigs.map(gig => (
+                        <motion.div
+                          key={gig.uid}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="flex items-start gap-4 bg-[oklch(0.93_0.02_75)] rounded-sm p-4 border-l-4 border-[oklch(0.68_0.15_65)]"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-[oklch(0.22_0.05_35)] rounded-sm flex items-center justify-center">
+                            <Music size={16} className="text-[oklch(0.68_0.15_65)]" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-display text-base text-[oklch(0.22_0.05_35)] font-semibold">{gig.title}</p>
+                            {gig.location && (
+                              <p className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1 mt-0.5">
+                                <MapPin size={10} /> {gig.location}
+                              </p>
+                            )}
+                            {formatTime(gig) && (
+                              <p className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1 mt-0.5">
+                                <Clock size={10} /> {formatTime(gig)}
+                              </p>
+                            )}
+                            {gig.description && (
+                              <p className="font-body text-xs text-[oklch(0.45_0.04_50)] mt-1 leading-relaxed">{gig.description}</p>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Footer legend */}
               <div className="px-5 py-3 border-t border-[oklch(0.88_0.025_70)] bg-[oklch(0.97_0.015_75)] flex items-center gap-4 flex-wrap">
@@ -1003,7 +1013,7 @@ function CalendarSection() {
                   <span className="w-5 h-5 rounded-full bg-[oklch(0.68_0.15_65)] flex items-center justify-center text-[oklch(0.15_0.04_30)] font-bold text-[0.6rem]">7</span>
                   Today
                 </span>
-                <span className="font-body text-xs text-[oklch(0.55_0.04_55)]">Click any day to see show details</span>
+                <span className="font-body text-xs text-[oklch(0.55_0.04_55)]">Click any day to view details below</span>
               </div>
             </div>
           </FadeUp>
