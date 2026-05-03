@@ -738,25 +738,67 @@ function VenuesSection() {
   );
 }
 
+
 function CalendarSection() {
   // Live iCal data — refetches every 5 minutes
-  const { data, isLoading, isError, dataUpdatedAt, refetch, isFetching } =
+  const { data, isLoading, isError, refetch, isFetching } =
     trpc.calendar.getGigs.useQuery(undefined, {
       refetchInterval: 5 * 60 * 1000,
       staleTime: 4 * 60 * 1000,
     });
 
-  const upcoming = data?.upcoming ?? [];
-  const past = data?.past ?? [];
+  const allGigs = [...(data?.upcoming ?? []), ...(data?.past ?? [])];
 
-  const formatMonth = (dateStr: string) => {
-    const d = new Date(dateStr + "T12:00:00");
-    return d.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+  // Current month/year state
+  const today = new Date();
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-indexed
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+
+  const monthName = new Date(viewYear, viewMonth, 1).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+  const prevMonth = () => {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+    setSelectedDay(null);
+  };
+  const nextMonth = () => {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
+    setSelectedDay(null);
   };
 
-  const formatDay = (dateStr: string) => {
-    const d = new Date(dateStr + "T12:00:00");
-    return d.toLocaleDateString("en-US", { day: "numeric" });
+  // Build calendar grid
+  const firstDay = new Date(viewYear, viewMonth, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const daysInPrev = new Date(viewYear, viewMonth, 0).getDate();
+
+  // Map gigs to day numbers for this month
+  const gigsByDay: Record<number, typeof allGigs> = {};
+  allGigs.forEach(gig => {
+    const d = new Date(gig.date + "T12:00:00");
+    if (d.getFullYear() === viewYear && d.getMonth() === viewMonth) {
+      const day = d.getDate();
+      if (!gigsByDay[day]) gigsByDay[day] = [];
+      gigsByDay[day].push(gig);
+    }
+  });
+
+  // Build grid cells: prev-month trailing, current month, next-month leading
+  const cells: { day: number; type: "prev" | "current" | "next" }[] = [];
+  for (let i = firstDay - 1; i >= 0; i--) cells.push({ day: daysInPrev - i, type: "prev" });
+  for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, type: "current" });
+  const remaining = 42 - cells.length;
+  for (let d = 1; d <= remaining; d++) cells.push({ day: d, type: "next" });
+
+  const isToday = (day: number) =>
+    day === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
+
+  const selectedGigs = selectedDay ? (gigsByDay[selectedDay] ?? []) : [];
+
+  const formatTime = (gig: { time?: string | null; endTime?: string | null }) => {
+    if (!gig.time) return null;
+    return gig.endTime ? `${gig.time} – ${gig.endTime}` : gig.time;
   };
 
   const formatLastUpdated = (ts: number) => {
@@ -767,7 +809,7 @@ function CalendarSection() {
   return (
     <section id="calendar" className="py-24 bg-[oklch(0.93_0.02_75)]">
       <div className="container">
-        <FadeUp className="text-center mb-16">
+        <FadeUp className="text-center mb-12">
           <p className="section-label mb-3">Live Shows</p>
           <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.22_0.05_35)] leading-tight mb-4">
             Upcoming Performances
@@ -792,98 +834,179 @@ function CalendarSection() {
           </div>
         </FadeUp>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Upcoming Shows List */}
-          <div className="lg:col-span-2">
-            <FadeUp>
-              <div className="space-y-3">
-                {/* Loading skeleton */}
-                {isLoading && (
-                  <div className="space-y-3">
-                    {[1, 2, 3].map((n) => (
-                      <div key={n} className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 flex items-center gap-5 animate-pulse">
-                        <div className="flex-shrink-0 w-16 h-16 bg-[oklch(0.88_0.025_70)] rounded-sm" />
-                        <div className="flex-1 space-y-2">
-                          <div className="h-4 bg-[oklch(0.88_0.025_70)] rounded w-3/4" />
-                          <div className="h-3 bg-[oklch(0.88_0.025_70)] rounded w-1/2" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* ── Full Monthly Calendar ── */}
+          <FadeUp className="lg:col-span-2">
+            <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm shadow-lg overflow-hidden">
+              {/* Month navigation header */}
+              <div className="flex items-center justify-between px-6 py-4 bg-[oklch(0.22_0.05_35)]">
+                <button
+                  onClick={prevMonth}
+                  className="w-9 h-9 flex items-center justify-center rounded-full text-[oklch(0.96_0.025_75)] hover:bg-[oklch(0.96_0.025_75/0.12)] hover:text-[oklch(0.68_0.15_65)] transition-all"
+                  aria-label="Previous month"
+                >
+                  <ChevronDown size={18} className="rotate-90" />
+                </button>
+                <h3 className="font-display text-xl text-[oklch(0.96_0.025_75)] tracking-wide">
+                  {monthName}
+                </h3>
+                <button
+                  onClick={nextMonth}
+                  className="w-9 h-9 flex items-center justify-center rounded-full text-[oklch(0.96_0.025_75)] hover:bg-[oklch(0.96_0.025_75/0.12)] hover:text-[oklch(0.68_0.15_65)] transition-all"
+                  aria-label="Next month"
+                >
+                  <ChevronDown size={18} className="-rotate-90" />
+                </button>
+              </div>
 
-                {/* Error state */}
-                {isError && (
-                  <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-8 text-center">
-                    <AlertCircle size={28} className="text-amber-500 mx-auto mb-3" />
-                    <p className="font-display text-lg text-[oklch(0.22_0.05_35)] mb-2">Couldn't load calendar</p>
-                    <p className="font-body text-sm text-[oklch(0.55_0.04_55)] mb-4">Check back soon or follow @rnr_music_duo for updates.</p>
-                    <button onClick={() => refetch()} className="btn-amber text-sm">
-                      <RefreshCw size={13} /> Try Again
-                    </button>
+              {/* Day-of-week headers */}
+              <div className="grid grid-cols-7 border-b border-[oklch(0.88_0.025_70)]">
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
+                  <div key={d} className="py-2 text-center font-body text-[0.65rem] font-bold uppercase tracking-wider text-[oklch(0.55_0.04_55)]">
+                    {d}
                   </div>
-                )}
+                ))}
+              </div>
 
-                {/* Empty state */}
-                {!isLoading && !isError && upcoming.length === 0 && (
-                  <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-10 text-center">
-                    <Calendar size={32} className="text-[oklch(0.68_0.15_65)] mx-auto mb-3" />
-                    <p className="font-display text-xl text-[oklch(0.22_0.05_35)] mb-2">New Shows Coming Soon</p>
-                    <p className="font-body text-sm text-[oklch(0.55_0.04_55)]">Follow @rnr_music_duo on Instagram for the latest announcements.</p>
-                  </div>
-                )}
+              {/* Calendar grid */}
+              {isLoading ? (
+                <div className="grid grid-cols-7">
+                  {Array.from({ length: 42 }).map((_, i) => (
+                    <div key={i} className="h-14 border-b border-r border-[oklch(0.88_0.025_70/0.5)] animate-pulse bg-[oklch(0.93_0.02_75/0.3)]" />
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-7">
+                  {cells.map((cell, idx) => {
+                    const isCurrentMonth = cell.type === "current";
+                    const hasGigs = isCurrentMonth && !!gigsByDay[cell.day];
+                    const gigCount = hasGigs ? gigsByDay[cell.day].length : 0;
+                    const isSel = isCurrentMonth && selectedDay === cell.day;
+                    const isTod = isCurrentMonth && isToday(cell.day);
 
-                {/* Upcoming shows from iCal */}
-                {!isLoading && upcoming.map((gig, i) => (
+                    return (
+                      <motion.button
+                        key={idx}
+                        onClick={() => isCurrentMonth ? setSelectedDay(isSel ? null : cell.day) : undefined}
+                        className={`
+                          relative min-h-[56px] md:min-h-[64px] p-1.5 border-b border-r border-[oklch(0.88_0.025_70/0.5)]
+                          flex flex-col items-center
+                          transition-all duration-150
+                          ${!isCurrentMonth ? "cursor-default" : "cursor-pointer"}
+                          ${isSel ? "bg-[oklch(0.22_0.05_35)]" : isCurrentMonth ? "hover:bg-[oklch(0.93_0.02_75)]" : ""}
+                        `}
+                        whileHover={isCurrentMonth ? { scale: 1.04 } : {}}
+                        whileTap={isCurrentMonth ? { scale: 0.97 } : {}}
+                        transition={{ duration: 0.12 }}
+                        aria-label={isCurrentMonth ? `${cell.day} ${monthName}${hasGigs ? `, ${gigCount} show${gigCount > 1 ? 's' : ''}` : ''}` : undefined}
+                      >
+                        {/* Day number */}
+                        <span className={`
+                          font-body text-sm font-semibold leading-none mb-1 mt-1 w-7 h-7 flex items-center justify-center rounded-full
+                          ${!isCurrentMonth ? "text-[oklch(0.75_0.02_75)]" : ""}
+                          ${isCurrentMonth && !isTod && !isSel ? "text-[oklch(0.35_0.06_40)]" : ""}
+                          ${isTod && !isSel ? "bg-[oklch(0.68_0.15_65)] text-[oklch(0.15_0.04_30)] font-bold" : ""}
+                          ${isSel ? "bg-[oklch(0.68_0.15_65)] text-[oklch(0.15_0.04_30)] font-bold" : ""}
+                        `}>
+                          {cell.day}
+                        </span>
+                        {/* Event dots */}
+                        {hasGigs && (
+                          <div className="flex gap-0.5 flex-wrap justify-center">
+                            {Array.from({ length: Math.min(gigCount, 3) }).map((_, di) => (
+                              <span
+                                key={di}
+                                className={`w-1.5 h-1.5 rounded-full ${isSel ? "bg-[oklch(0.68_0.15_65)]" : "bg-[oklch(0.55_0.12_55)]"}`}
+                              />
+                            ))}
+                            {gigCount > 3 && (
+                              <span className={`font-body text-[0.5rem] font-bold ${isSel ? "text-[oklch(0.68_0.15_65)]" : "text-[oklch(0.55_0.12_55)]"}`}>+{gigCount - 3}</span>
+                            )}
+                          </div>
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Selected day event panel */}
+              <AnimatePresence>
+                {selectedDay !== null && (
                   <motion.div
-                    key={gig.uid}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.07, duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 flex items-center gap-5 hover:border-[oklch(0.68_0.15_65/0.6)] hover:shadow-md transition-all duration-300 group"
+                    key={selectedDay}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="border-t border-[oklch(0.88_0.025_70)] overflow-hidden"
                   >
-                    {/* Date badge */}
-                    <div className="flex-shrink-0 w-16 h-16 bg-[oklch(0.22_0.05_35)] rounded-sm flex flex-col items-center justify-center">
-                      <span className="font-body text-[0.6rem] font-bold text-[oklch(0.68_0.15_65)] uppercase tracking-widest leading-none">
-                        {formatMonth(gig.date)}
-                      </span>
-                      <span className="font-display text-2xl font-bold text-[oklch(0.96_0.025_75)] leading-none mt-0.5">
-                        {formatDay(gig.date)}
-                      </span>
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-display text-lg text-[oklch(0.22_0.05_35)] font-semibold truncate group-hover:text-[oklch(0.55_0.12_55)] transition-colors">
-                        {gig.title}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
-                        {gig.location && (
-                          <span className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1">
-                            <MapPin size={11} /> {gig.location}
-                          </span>
-                        )}
-                        {gig.time && (
-                          <span className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1">
-                            <Clock size={11} /> {gig.time}{gig.endTime ? ` – ${gig.endTime}` : ''}
-                          </span>
-                        )}
-                        {gig.isAllDay && (
-                          <span className="font-body text-xs text-[oklch(0.68_0.15_65)] bg-[oklch(0.68_0.15_65/0.1)] px-2 py-0.5 rounded-full">
-                            All Day
-                          </span>
-                        )}
+                    <div className="p-5">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="font-display text-lg text-[oklch(0.22_0.05_35)]">
+                          {new Date(viewYear, viewMonth, selectedDay).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+                        </h4>
+                        <button
+                          onClick={() => setSelectedDay(null)}
+                          className="text-[oklch(0.55_0.04_55)] hover:text-[oklch(0.22_0.05_35)] transition-colors p-1"
+                          aria-label="Close"
+                        >
+                          <X size={16} />
+                        </button>
                       </div>
-                      {gig.description && (
-                        <p className="font-body text-xs text-[oklch(0.55_0.04_55)] mt-1 truncate">{gig.description}</p>
+                      {selectedGigs.length === 0 ? (
+                        <p className="font-body text-sm text-[oklch(0.55_0.04_55)] italic">No shows scheduled for this day.</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {selectedGigs.map(gig => (
+                            <motion.div
+                              key={gig.uid}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="flex items-start gap-4 bg-[oklch(0.93_0.02_75)] rounded-sm p-4 border-l-4 border-[oklch(0.68_0.15_65)]"
+                            >
+                              <div className="flex-shrink-0 w-10 h-10 bg-[oklch(0.22_0.05_35)] rounded-sm flex items-center justify-center">
+                                <Music size={16} className="text-[oklch(0.68_0.15_65)]" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-display text-base text-[oklch(0.22_0.05_35)] font-semibold">{gig.title}</p>
+                                {gig.location && (
+                                  <p className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1 mt-0.5">
+                                    <MapPin size={10} /> {gig.location}
+                                  </p>
+                                )}
+                                {formatTime(gig) && (
+                                  <p className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1 mt-0.5">
+                                    <Clock size={10} /> {formatTime(gig)}
+                                  </p>
+                                )}
+                                {gig.description && (
+                                  <p className="font-body text-xs text-[oklch(0.45_0.04_50)] mt-1 leading-relaxed">{gig.description}</p>
+                                )}
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </motion.div>
-                ))}
+                )}
+              </AnimatePresence>
+
+              {/* Footer legend */}
+              <div className="px-5 py-3 border-t border-[oklch(0.88_0.025_70)] bg-[oklch(0.97_0.015_75)] flex items-center gap-4 flex-wrap">
+                <span className="flex items-center gap-1.5 font-body text-xs text-[oklch(0.55_0.04_55)]">
+                  <span className="w-2 h-2 rounded-full bg-[oklch(0.55_0.12_55)]" />
+                  Show scheduled
+                </span>
+                <span className="flex items-center gap-1.5 font-body text-xs text-[oklch(0.55_0.04_55)]">
+                  <span className="w-5 h-5 rounded-full bg-[oklch(0.68_0.15_65)] flex items-center justify-center text-[oklch(0.15_0.04_30)] font-bold text-[0.6rem]">7</span>
+                  Today
+                </span>
+                <span className="font-body text-xs text-[oklch(0.55_0.04_55)]">Click any day to see show details</span>
               </div>
-            </FadeUp>
-          </div>
+            </div>
+          </FadeUp>
 
           {/* Sidebar */}
           <div className="space-y-6">
@@ -907,28 +1030,63 @@ function CalendarSection() {
               </div>
             </FadeUp>
 
-            {/* Past Shows */}
-            {past.length > 0 && (
-              <FadeUp delay={200}>
-                <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5">
-                  <p className="section-label mb-4">Recent Shows</p>
+            {/* Upcoming shows list (next 4) */}
+            <FadeUp delay={150}>
+              <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5">
+                <p className="section-label mb-4">Next Shows</p>
+                {isLoading ? (
                   <div className="space-y-3">
-                    {past.map((gig) => (
-                      <div key={`past-${gig.uid}`} className="flex items-center gap-3 opacity-60">
-                        <div className="flex-shrink-0 w-10 h-10 bg-[oklch(0.93_0.02_75)] rounded-sm flex flex-col items-center justify-center">
-                          <span className="font-body text-[0.5rem] font-bold text-[oklch(0.55_0.04_55)] uppercase leading-none">{formatMonth(gig.date)}</span>
-                          <span className="font-display text-base font-bold text-[oklch(0.35_0.06_40)] leading-none">{formatDay(gig.date)}</span>
-                        </div>
-                        <div>
-                          <p className="font-body text-xs font-semibold text-[oklch(0.35_0.06_40)]">{gig.title}</p>
-                          {gig.location && <p className="font-body text-xs text-[oklch(0.55_0.04_55)]">{gig.location}</p>}
+                    {[1,2,3].map(n => (
+                      <div key={n} className="flex gap-3 animate-pulse">
+                        <div className="w-10 h-10 bg-[oklch(0.88_0.025_70)] rounded-sm flex-shrink-0" />
+                        <div className="flex-1 space-y-1.5">
+                          <div className="h-3 bg-[oklch(0.88_0.025_70)] rounded w-3/4" />
+                          <div className="h-2.5 bg-[oklch(0.88_0.025_70)] rounded w-1/2" />
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
-              </FadeUp>
-            )}
+                ) : (data?.upcoming ?? []).length === 0 ? (
+                  <div className="text-center py-4">
+                    <Calendar size={24} className="text-[oklch(0.68_0.15_65)] mx-auto mb-2" />
+                    <p className="font-body text-sm text-[oklch(0.55_0.04_55)]">No upcoming shows yet.</p>
+                    <p className="font-body text-xs text-[oklch(0.65_0.02_70)] mt-1">Check back soon!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {(data?.upcoming ?? []).slice(0, 4).map(gig => {
+                      const d = new Date(gig.date + "T12:00:00");
+                      return (
+                        <button
+                          key={gig.uid}
+                          onClick={() => {
+                            setViewYear(d.getFullYear());
+                            setViewMonth(d.getMonth());
+                            setSelectedDay(d.getDate());
+                            document.getElementById("calendar")?.scrollIntoView({ behavior: "smooth" });
+                          }}
+                          className="w-full flex items-center gap-3 hover:bg-[oklch(0.93_0.02_75)] rounded-sm p-1.5 -mx-1.5 transition-colors text-left group"
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 bg-[oklch(0.22_0.05_35)] rounded-sm flex flex-col items-center justify-center">
+                            <span className="font-body text-[0.5rem] font-bold text-[oklch(0.68_0.15_65)] uppercase leading-none">
+                              {d.toLocaleDateString("en-US", { month: "short" })}
+                            </span>
+                            <span className="font-display text-base font-bold text-[oklch(0.96_0.025_75)] leading-none">
+                              {d.getDate()}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-body text-xs font-semibold text-[oklch(0.35_0.06_40)] group-hover:text-[oklch(0.55_0.12_55)] transition-colors truncate">{gig.title}</p>
+                            {gig.location && <p className="font-body text-xs text-[oklch(0.55_0.04_55)] truncate">{gig.location}</p>}
+                          </div>
+                          <ChevronRight size={12} className="text-[oklch(0.68_0.15_65)] flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </FadeUp>
 
             {/* Instagram follow */}
             <FadeUp delay={300}>
