@@ -7,9 +7,10 @@
    ============================================================ */
 
 import { useEffect, useRef, useState } from "react";
-import { Instagram, Mail, MapPin, Music, ChevronDown, Menu, X, Star, ExternalLink, ChevronRight, Mic2, Guitar, Calendar, Clock, Download } from "lucide-react";
+import { Instagram, Mail, MapPin, Music, ChevronDown, Menu, X, Star, ExternalLink, ChevronRight, Mic2, Guitar, Calendar, Clock, Download, RefreshCw, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapView } from "@/components/Map";
+import { trpc } from "@/lib/trpc";
 
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
@@ -101,52 +102,9 @@ const VENUES = [
 ];
 
 // ─── Gig Calendar Data ────────────────────────────────────────
-// TO UPDATE: Edit the GIG_EVENTS array below. Add or remove entries as needed.
-// Format: { date: "YYYY-MM-DD", time: "H:MM PM", venue: "Venue Name", location: "City, CA", url: "optional link" }
-const GIG_EVENTS = [
-  {
-    date: "2025-06-07",
-    time: "2:00 PM",
-    venue: "P & V Winery",
-    location: "Morgan Hill, CA",
-    url: "https://pandvwinery.com/",
-  },
-  {
-    date: "2025-06-14",
-    time: "5:00 PM",
-    venue: "Vines & Pints",
-    location: "Gilroy, CA",
-    url: "https://www.vinesandpints.com/",
-  },
-  {
-    date: "2025-06-21",
-    time: "3:00 PM",
-    venue: "Crave Wine Company",
-    location: "Hollister, CA",
-    url: "https://www.cravewineco.com/",
-  },
-  {
-    date: "2025-07-04",
-    time: "1:00 PM",
-    venue: "Twin Oaks Community",
-    location: "Hollister, CA",
-    url: "",
-  },
-  {
-    date: "2025-07-12",
-    time: "4:00 PM",
-    venue: "P & V Winery",
-    location: "Morgan Hill, CA",
-    url: "https://pandvwinery.com/",
-  },
-  {
-    date: "2025-07-19",
-    time: "5:30 PM",
-    venue: "Vines & Pints",
-    location: "Gilroy, CA",
-    url: "https://www.vinesandpints.com/",
-  },
-];
+// Events are now pulled LIVE from the iCloud calendar via the backend iCal proxy.
+// To add/update shows: edit the shared iCloud calendar "R&R Acoustic duo".
+// The website will reflect changes within ~5 minutes automatically.
 
 // ─── Testimonials ─────────────────────────────────────────────
 const TESTIMONIALS = [
@@ -779,30 +737,31 @@ function VenuesSection() {
   );
 }
 
-// ─── Gig Calendar Section ─────────────────────────────────────
 function CalendarSection() {
-  const now = new Date();
+  // Live iCal data — refetches every 5 minutes
+  const { data, isLoading, isError, dataUpdatedAt, refetch, isFetching } =
+    trpc.calendar.getGigs.useQuery(undefined, {
+      refetchInterval: 5 * 60 * 1000,
+      staleTime: 4 * 60 * 1000,
+    });
 
-  // Parse and sort upcoming gigs
-  const upcoming = GIG_EVENTS
-    .map((g) => ({ ...g, dateObj: new Date(g.date + "T12:00:00") }))
-    .filter((g) => g.dateObj >= new Date(now.getFullYear(), now.getMonth(), now.getDate()))
-    .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+  const upcoming = data?.upcoming ?? [];
+  const past = data?.past ?? [];
 
-  const past = GIG_EVENTS
-    .map((g) => ({ ...g, dateObj: new Date(g.date + "T12:00:00") }))
-    .filter((g) => g.dateObj < new Date(now.getFullYear(), now.getMonth(), now.getDate()))
-    .sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime())
-    .slice(0, 4);
+  const formatMonth = (dateStr: string) => {
+    const d = new Date(dateStr + "T12:00:00");
+    return d.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+  };
 
-  const formatDate = (d: Date) =>
-    d.toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" });
+  const formatDay = (dateStr: string) => {
+    const d = new Date(dateStr + "T12:00:00");
+    return d.toLocaleDateString("en-US", { day: "numeric" });
+  };
 
-  const formatMonth = (d: Date) =>
-    d.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
-
-  const formatDay = (d: Date) =>
-    d.toLocaleDateString("en-US", { day: "numeric" });
+  const formatLastUpdated = (ts: number) => {
+    const d = new Date(ts);
+    return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+  };
 
   return (
     <section id="calendar" className="py-24 bg-[oklch(0.93_0.02_75)]">
@@ -814,8 +773,22 @@ function CalendarSection() {
           </h2>
           <div className="golden-divider max-w-[80px] mx-auto mb-6" />
           <p className="font-body text-[oklch(0.45_0.04_50)] text-lg max-w-2xl mx-auto">
-            Catch Ron & Rebecca live at one of their regular venues across the Bay Area. Check back often — new shows are added regularly.
+            Catch Ron & Rebecca live at one of their regular venues across the Bay Area. This calendar syncs live from their iCloud — shows appear automatically when added.
           </p>
+          {/* Live sync indicator */}
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <span className="inline-flex items-center gap-1.5 font-body text-xs text-[oklch(0.55_0.04_55)] bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] px-3 py-1.5 rounded-full">
+              <span className={`w-1.5 h-1.5 rounded-full ${isFetching ? 'bg-amber-400 animate-pulse' : 'bg-green-500'}`} />
+              {isFetching ? 'Syncing...' : `Live calendar${data?.fetchedAt ? ` · Updated ${formatLastUpdated(data.fetchedAt)}` : ''}`}
+            </span>
+            <button
+              onClick={() => refetch()}
+              className="p-1.5 rounded-full text-[oklch(0.55_0.04_55)] hover:text-[oklch(0.55_0.12_55)] hover:bg-[oklch(0.88_0.025_70)] transition-colors"
+              aria-label="Refresh calendar"
+            >
+              <RefreshCw size={12} className={isFetching ? 'animate-spin' : ''} />
+            </button>
+          </div>
         </FadeUp>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -823,64 +796,90 @@ function CalendarSection() {
           <div className="lg:col-span-2">
             <FadeUp>
               <div className="space-y-3">
-                {upcoming.length === 0 ? (
+                {/* Loading skeleton */}
+                {isLoading && (
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((n) => (
+                      <div key={n} className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 flex items-center gap-5 animate-pulse">
+                        <div className="flex-shrink-0 w-16 h-16 bg-[oklch(0.88_0.025_70)] rounded-sm" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-[oklch(0.88_0.025_70)] rounded w-3/4" />
+                          <div className="h-3 bg-[oklch(0.88_0.025_70)] rounded w-1/2" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Error state */}
+                {isError && (
+                  <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-8 text-center">
+                    <AlertCircle size={28} className="text-amber-500 mx-auto mb-3" />
+                    <p className="font-display text-lg text-[oklch(0.22_0.05_35)] mb-2">Couldn't load calendar</p>
+                    <p className="font-body text-sm text-[oklch(0.55_0.04_55)] mb-4">Check back soon or follow @rnr_music_duo for updates.</p>
+                    <button onClick={() => refetch()} className="btn-amber text-sm">
+                      <RefreshCw size={13} /> Try Again
+                    </button>
+                  </div>
+                )}
+
+                {/* Empty state */}
+                {!isLoading && !isError && upcoming.length === 0 && (
                   <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-10 text-center">
                     <Calendar size={32} className="text-[oklch(0.68_0.15_65)] mx-auto mb-3" />
                     <p className="font-display text-xl text-[oklch(0.22_0.05_35)] mb-2">New Shows Coming Soon</p>
                     <p className="font-body text-sm text-[oklch(0.55_0.04_55)]">Follow @rnr_music_duo on Instagram for the latest announcements.</p>
                   </div>
-                ) : (
-                  upcoming.map((gig, i) => (
-                    <motion.div
-                      key={`${gig.date}-${gig.venue}`}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.07, duration: 0.5 }}
-                      viewport={{ once: true }}
-                      className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 flex items-center gap-5 hover:border-[oklch(0.68_0.15_65/0.6)] hover:shadow-md transition-all duration-300 group"
-                    >
-                      {/* Date badge */}
-                      <div className="flex-shrink-0 w-16 h-16 bg-[oklch(0.22_0.05_35)] rounded-sm flex flex-col items-center justify-center">
-                        <span className="font-body text-[0.6rem] font-bold text-[oklch(0.68_0.15_65)] uppercase tracking-widest leading-none">
-                          {formatMonth(gig.dateObj)}
-                        </span>
-                        <span className="font-display text-2xl font-bold text-[oklch(0.96_0.025_75)] leading-none mt-0.5">
-                          {formatDay(gig.dateObj)}
-                        </span>
-                      </div>
+                )}
 
-                      {/* Info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-display text-lg text-[oklch(0.22_0.05_35)] font-semibold truncate group-hover:text-[oklch(0.55_0.12_55)] transition-colors">
-                          {gig.venue}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+                {/* Upcoming shows from iCal */}
+                {!isLoading && upcoming.map((gig, i) => (
+                  <motion.div
+                    key={gig.uid}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.07, duration: 0.5 }}
+                    viewport={{ once: true }}
+                    className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 flex items-center gap-5 hover:border-[oklch(0.68_0.15_65/0.6)] hover:shadow-md transition-all duration-300 group"
+                  >
+                    {/* Date badge */}
+                    <div className="flex-shrink-0 w-16 h-16 bg-[oklch(0.22_0.05_35)] rounded-sm flex flex-col items-center justify-center">
+                      <span className="font-body text-[0.6rem] font-bold text-[oklch(0.68_0.15_65)] uppercase tracking-widest leading-none">
+                        {formatMonth(gig.date)}
+                      </span>
+                      <span className="font-display text-2xl font-bold text-[oklch(0.96_0.025_75)] leading-none mt-0.5">
+                        {formatDay(gig.date)}
+                      </span>
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-display text-lg text-[oklch(0.22_0.05_35)] font-semibold truncate group-hover:text-[oklch(0.55_0.12_55)] transition-colors">
+                        {gig.title}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+                        {gig.location && (
                           <span className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1">
                             <MapPin size={11} /> {gig.location}
                           </span>
+                        )}
+                        {gig.time && (
                           <span className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1">
-                            <Clock size={11} /> {gig.time}
+                            <Clock size={11} /> {gig.time}{gig.endTime ? ` – ${gig.endTime}` : ''}
                           </span>
-                        </div>
+                        )}
+                        {gig.isAllDay && (
+                          <span className="font-body text-xs text-[oklch(0.68_0.15_65)] bg-[oklch(0.68_0.15_65/0.1)] px-2 py-0.5 rounded-full">
+                            All Day
+                          </span>
+                        )}
                       </div>
-
-                      {/* Link */}
-                      {gig.url ? (
-                        <a
-                          href={gig.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-shrink-0 text-[oklch(0.68_0.15_65)] hover:text-[oklch(0.55_0.12_55)] transition-colors"
-                          aria-label={`Visit ${gig.venue}`}
-                        >
-                          <ExternalLink size={16} />
-                        </a>
-                      ) : (
-                        <div className="flex-shrink-0 w-4" />
+                      {gig.description && (
+                        <p className="font-body text-xs text-[oklch(0.55_0.04_55)] mt-1 truncate">{gig.description}</p>
                       )}
-                    </motion.div>
-                  ))
-                )}
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </FadeUp>
           </div>
@@ -914,14 +913,14 @@ function CalendarSection() {
                   <p className="section-label mb-4">Recent Shows</p>
                   <div className="space-y-3">
                     {past.map((gig) => (
-                      <div key={`past-${gig.date}-${gig.venue}`} className="flex items-center gap-3 opacity-60">
+                      <div key={`past-${gig.uid}`} className="flex items-center gap-3 opacity-60">
                         <div className="flex-shrink-0 w-10 h-10 bg-[oklch(0.93_0.02_75)] rounded-sm flex flex-col items-center justify-center">
-                          <span className="font-body text-[0.5rem] font-bold text-[oklch(0.55_0.04_55)] uppercase leading-none">{formatMonth(gig.dateObj)}</span>
-                          <span className="font-display text-base font-bold text-[oklch(0.35_0.06_40)] leading-none">{formatDay(gig.dateObj)}</span>
+                          <span className="font-body text-[0.5rem] font-bold text-[oklch(0.55_0.04_55)] uppercase leading-none">{formatMonth(gig.date)}</span>
+                          <span className="font-display text-base font-bold text-[oklch(0.35_0.06_40)] leading-none">{formatDay(gig.date)}</span>
                         </div>
                         <div>
-                          <p className="font-body text-xs font-semibold text-[oklch(0.35_0.06_40)]">{gig.venue}</p>
-                          <p className="font-body text-xs text-[oklch(0.55_0.04_55)]">{gig.location}</p>
+                          <p className="font-body text-xs font-semibold text-[oklch(0.35_0.06_40)]">{gig.title}</p>
+                          {gig.location && <p className="font-body text-xs text-[oklch(0.55_0.04_55)]">{gig.location}</p>}
                         </div>
                       </div>
                     ))}
