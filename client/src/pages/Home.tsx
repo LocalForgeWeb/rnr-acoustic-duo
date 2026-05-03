@@ -26,33 +26,15 @@ const IMAGES = {
   performance: "/manus-storage/acoustic_performance_a151795a.jpg",
 };
 
-// ─── Intersection Observer Hook ───────────────────────────────
-function useInView(threshold = 0.12) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold]);
-  return { ref, inView };
-}
-
 // ─── Animated Section Wrapper ─────────────────────────────────
 function FadeUp({ children, className = "", delay = 0 }: {
   children: React.ReactNode; className?: string; delay?: number;
 }) {
-  const { ref, inView } = useInView();
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.08 }}
       transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: delay / 1000 }}
       className={className}
     >
@@ -373,16 +355,35 @@ function Navigation() {
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-1">
               {NAV_ITEMS.filter(i => !i.cta).map((item, idx) => (
-                <motion.button
-                  key={item.label}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.06 }}
-                  onClick={() => scrollTo(item.href)}
-                  className="w-full text-left py-4 font-display text-2xl text-[oklch(0.96_0.025_75)] hover:text-[oklch(0.68_0.15_65)] transition-colors border-b border-[oklch(0.96_0.025_75/0.08)]"
-                >
-                  {item.label}
-                </motion.button>
+                <div key={item.label}>
+                  <motion.button
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.06 }}
+                    onClick={() => scrollTo(item.href)}
+                    className="w-full text-left py-4 font-display text-2xl text-[oklch(0.96_0.025_75)] hover:text-[oklch(0.68_0.15_65)] transition-colors border-b border-[oklch(0.96_0.025_75/0.08)]"
+                  >
+                    {item.label}
+                  </motion.button>
+                  {/* Sub-links shown inline under parent */}
+                  {item.dropdown && (
+                    <div className="pl-4 pb-2 space-y-0.5">
+                      {item.dropdown.map((sub, subIdx) => (
+                        <motion.button
+                          key={sub.label}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.06 + subIdx * 0.04 + 0.08 }}
+                          onClick={() => scrollTo(sub.href)}
+                          className="w-full text-left py-2 font-body text-sm text-[oklch(0.68_0.15_65)] hover:text-[oklch(0.96_0.025_75)] transition-colors flex items-center gap-2"
+                        >
+                          <ChevronRight size={10} className="opacity-60" />
+                          {sub.label}
+                        </motion.button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
             <div className="p-6 space-y-3">
