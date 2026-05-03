@@ -1,13 +1,15 @@
 /* ============================================================
    R & R Acoustic Duo — Home Page
    Design: "Golden Hour Americana" — Editorial Folk / Americana
-   Members: Rebecca Barnes (vocals) & Ron Butron (guitar)
-   Features: Dropdown nav, real logo, real duo photo, animated sections
+   Members: Ron Butron (guitar & vocals) & Rebecca Barnes (vocals)
+   Features: Dropdown nav, real logo, real duo photo, animated sections,
+             Gig Calendar, Live Google Map with venue pins, Flyer link
    ============================================================ */
 
 import { useEffect, useRef, useState } from "react";
-import { Instagram, Mail, MapPin, Music, ChevronDown, Menu, X, Star, ExternalLink, ChevronRight, Mic2, Guitar } from "lucide-react";
+import { Instagram, Mail, MapPin, Music, ChevronDown, Menu, X, Star, ExternalLink, ChevronRight, Mic2, Guitar, Calendar, Clock, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MapView } from "@/components/Map";
 
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
@@ -67,6 +69,7 @@ const VENUES = [
     image: IMAGES.pandv,
     url: "https://pandvwinery.com/",
     tag: "Winery & Event Venue",
+    coords: { lat: 37.1305, lng: -121.6544 },
   },
   {
     name: "Vines & Pints",
@@ -75,6 +78,7 @@ const VENUES = [
     image: IMAGES.vinesAndPints,
     url: "https://www.vinesandpints.com/",
     tag: "Wine Bar & Taproom",
+    coords: { lat: 37.0058, lng: -121.5683 },
   },
   {
     name: "Crave Wine Company",
@@ -83,6 +87,7 @@ const VENUES = [
     image: IMAGES.craveWine,
     url: "https://www.cravewineco.com/",
     tag: "Wine Bar & Shop",
+    coords: { lat: 36.8524, lng: -121.4016 },
   },
   {
     name: "Twin Oaks Community",
@@ -91,6 +96,55 @@ const VENUES = [
     image: IMAGES.twinOaks,
     url: "https://www.twinoakshollister.com/",
     tag: "Retirement Community",
+    coords: { lat: 36.8650, lng: -121.3950 },
+  },
+];
+
+// ─── Gig Calendar Data ────────────────────────────────────────
+// TO UPDATE: Edit the GIG_EVENTS array below. Add or remove entries as needed.
+// Format: { date: "YYYY-MM-DD", time: "H:MM PM", venue: "Venue Name", location: "City, CA", url: "optional link" }
+const GIG_EVENTS = [
+  {
+    date: "2025-06-07",
+    time: "2:00 PM",
+    venue: "P & V Winery",
+    location: "Morgan Hill, CA",
+    url: "https://pandvwinery.com/",
+  },
+  {
+    date: "2025-06-14",
+    time: "5:00 PM",
+    venue: "Vines & Pints",
+    location: "Gilroy, CA",
+    url: "https://www.vinesandpints.com/",
+  },
+  {
+    date: "2025-06-21",
+    time: "3:00 PM",
+    venue: "Crave Wine Company",
+    location: "Hollister, CA",
+    url: "https://www.cravewineco.com/",
+  },
+  {
+    date: "2025-07-04",
+    time: "1:00 PM",
+    venue: "Twin Oaks Community",
+    location: "Hollister, CA",
+    url: "",
+  },
+  {
+    date: "2025-07-12",
+    time: "4:00 PM",
+    venue: "P & V Winery",
+    location: "Morgan Hill, CA",
+    url: "https://pandvwinery.com/",
+  },
+  {
+    date: "2025-07-19",
+    time: "5:30 PM",
+    venue: "Vines & Pints",
+    location: "Gilroy, CA",
+    url: "https://www.vinesandpints.com/",
   },
 ];
 
@@ -144,8 +198,8 @@ const NAV_ITEMS = [
     href: "#about",
     dropdown: [
       { label: "Our Story", href: "#about" },
-      { label: "Rebecca Barnes", href: "#members" },
       { label: "Ron Butron", href: "#members" },
+      { label: "Rebecca Barnes", href: "#members" },
     ],
   },
   {
@@ -156,6 +210,14 @@ const NAV_ITEMS = [
       { label: "Vines & Pints", href: "#venues" },
       { label: "Crave Wine Company", href: "#venues" },
       { label: "Twin Oaks Community", href: "#venues" },
+    ],
+  },
+  {
+    label: "Shows",
+    href: "#calendar",
+    dropdown: [
+      { label: "Upcoming Gigs", href: "#calendar" },
+      { label: "Book a Show", href: "#contact" },
     ],
   },
   {
@@ -286,20 +348,18 @@ function Navigation() {
                         initial={{ opacity: 0, y: -8, scale: 0.97 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                        transition={{ duration: 0.18, ease: "easeOut" }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-52 bg-[oklch(0.97_0.015_75/0.98)] backdrop-blur-md border border-[oklch(0.88_0.025_70)] rounded-sm shadow-xl overflow-hidden"
+                        transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute top-full left-0 mt-1 bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm shadow-xl min-w-[180px] py-1 z-50"
                         onMouseEnter={() => handleMouseEnter(item.label)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        {/* Amber top accent */}
-                        <div className="h-0.5 bg-gradient-to-r from-transparent via-[oklch(0.68_0.15_65)] to-transparent" />
                         {item.dropdown.map((sub) => (
                           <button
                             key={sub.label}
                             onClick={() => scrollTo(sub.href)}
-                            className="w-full text-left px-4 py-2.5 font-body text-xs text-[oklch(0.35_0.06_40)] hover:bg-[oklch(0.93_0.02_75)] hover:text-[oklch(0.55_0.12_55)] transition-colors flex items-center gap-2 group/item"
+                            className="w-full text-left px-4 py-2.5 font-body text-[0.78rem] text-[oklch(0.35_0.06_40)] hover:text-[oklch(0.55_0.12_55)] hover:bg-[oklch(0.93_0.02_75)] transition-colors flex items-center gap-2"
                           >
-                            <ChevronRight size={10} className="text-[oklch(0.68_0.15_65)] opacity-0 group-hover/item:opacity-100 transition-opacity -ml-1" />
+                            <ChevronRight size={10} className="text-[oklch(0.68_0.15_65)]" />
                             {sub.label}
                           </button>
                         ))}
@@ -310,87 +370,81 @@ function Navigation() {
               </div>
             ))}
 
+            {/* Instagram */}
             <a
               href="https://www.instagram.com/rnr_music_duo"
               target="_blank"
               rel="noopener noreferrer"
-              className={`ml-2 transition-colors duration-200 ${
+              className={`ml-2 p-2 rounded-full transition-colors ${
                 isLight
                   ? "text-[oklch(0.96_0.025_75)] hover:text-[oklch(0.68_0.15_65)]"
-                  : "text-[oklch(0.22_0.05_35)] hover:text-[oklch(0.68_0.15_65)]"
+                  : "text-[oklch(0.35_0.06_40)] hover:text-[oklch(0.55_0.12_55)]"
               }`}
-              aria-label="Instagram @rnr_music_duo"
+              aria-label="Instagram"
             >
-              <Instagram size={17} />
+              <Instagram size={18} />
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Hamburger */}
           <button
-            className={`md:hidden transition-colors duration-200 ${
-              isLight ? "text-[oklch(0.96_0.025_75)]" : "text-[oklch(0.22_0.05_35)]"
-            }`}
-            onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
+            className={`md:hidden p-2 ${isLight ? "text-[oklch(0.96_0.025_75)]" : "text-[oklch(0.22_0.05_35)]"}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
           >
-            <Menu size={24} />
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed inset-0 bg-[oklch(0.22_0.05_35)] z-50 flex flex-col items-center justify-center gap-6 overflow-y-auto py-16"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-50 bg-[oklch(0.15_0.04_30)] flex flex-col"
           >
-            <button
-              className="absolute top-6 right-6 text-[oklch(0.96_0.025_75)] hover:text-[oklch(0.68_0.15_65)] transition-colors"
-              onClick={() => setMenuOpen(false)}
-              aria-label="Close menu"
-            >
-              <X size={28} />
-            </button>
-            <img src={IMAGES.logoLight} alt="R & R logo" className="h-16 w-auto mb-4" />
-            <p className="font-body text-xs tracking-[0.25em] uppercase text-[oklch(0.75_0.02_75)] -mt-4 mb-4">
-              Rebecca Barnes & Ron Butron
-            </p>
-            {NAV_ITEMS.map((item) => (
-              <div key={item.label} className="text-center">
-                <button
+            <div className="flex items-center justify-between p-6 border-b border-[oklch(0.96_0.025_75/0.1)]">
+              <img src={IMAGES.logoLight} alt="R & R Acoustic Duo" className="h-10 w-auto" />
+              <button onClick={() => setMenuOpen(false)} className="text-[oklch(0.96_0.025_75)] p-2">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 space-y-1">
+              {NAV_ITEMS.filter(i => !i.cta).map((item, idx) => (
+                <motion.button
+                  key={item.label}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.06 }}
                   onClick={() => scrollTo(item.href)}
-                  className="text-[oklch(0.96_0.025_75)] font-display text-2xl hover:text-[oklch(0.68_0.15_65)] transition-colors"
+                  className="w-full text-left py-4 font-display text-2xl text-[oklch(0.96_0.025_75)] hover:text-[oklch(0.68_0.15_65)] transition-colors border-b border-[oklch(0.96_0.025_75/0.08)]"
                 >
                   {item.label}
-                </button>
-                {item.dropdown && (
-                  <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-1">
-                    {item.dropdown.map((sub) => (
-                      <button
-                        key={sub.label}
-                        onClick={() => scrollTo(sub.href)}
-                        className="text-[oklch(0.65_0.02_70)] font-body text-xs hover:text-[oklch(0.68_0.15_65)] transition-colors"
-                      >
-                        {sub.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-            <a
-              href="https://www.instagram.com/rnr_music_duo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[oklch(0.96_0.025_75)] hover:text-[oklch(0.68_0.15_65)] transition-colors mt-2"
-            >
-              <Instagram size={18} />
-              <span className="font-body text-sm tracking-widest uppercase">@rnr_music_duo</span>
-            </a>
+                </motion.button>
+              ))}
+            </div>
+            <div className="p-6 space-y-3">
+              <button
+                onClick={() => scrollTo("#contact")}
+                className="btn-amber w-full justify-center text-base py-4"
+              >
+                <Music size={18} />
+                Book Us for Your Venue
+              </button>
+              <a
+                href="https://www.instagram.com/rnr_music_duo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 font-body text-sm text-[oklch(0.75_0.02_75)] hover:text-[oklch(0.68_0.15_65)] transition-colors"
+              >
+                <Instagram size={16} />
+                @rnr_music_duo
+              </a>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -400,99 +454,100 @@ function Navigation() {
 
 // ─── Hero Section ─────────────────────────────────────────────
 function HeroSection() {
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <section className="relative h-screen min-h-[640px] flex items-center justify-center overflow-hidden">
-      {/* Background Image with Parallax */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${IMAGES.hero})`,
-          transform: `translateY(${scrollY * 0.35}px)`,
-          top: "-15%",
-          bottom: "-15%",
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.5)] via-[oklch(0.22_0.05_35/0.35)] to-[oklch(0.22_0.05_35/0.75)]" />
-      <div className="absolute inset-0" style={{ boxShadow: "inset 0 0 100px rgba(44,24,16,0.45)" }} />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0">
+        <img
+          src={IMAGES.hero}
+          alt="R & R Acoustic Duo performing live"
+          className="w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.55)] via-[oklch(0.22_0.05_35/0.45)] to-[oklch(0.22_0.05_35/0.75)]" />
+      </div>
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        {/* Logo */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-6"
         >
-          {/* Logo */}
-          <motion.img
+          <img
             src={IMAGES.logoLight}
             alt="R & R Acoustic Duo"
-            className="h-24 md:h-32 w-auto mx-auto mb-4"
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            className="h-24 md:h-32 w-auto mx-auto drop-shadow-2xl"
           />
-          <motion.p
-            className="font-script text-[oklch(0.68_0.15_65)] text-2xl mb-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-          >
-            Bay Area Live Music
-          </motion.p>
-          <motion.h1
-            className="font-display text-4xl md:text-6xl lg:text-7xl text-[oklch(0.96_0.025_75)] leading-tight mb-3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          >
-            Rebecca Barnes<br />
-            <span className="italic font-normal text-[oklch(0.88_0.025_75)]">&amp; Ron Butron</span>
-          </motion.h1>
+        </motion.div>
 
-          <motion.div
-            className="golden-divider max-w-xs mx-auto mb-5"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 0.8, duration: 0.7 }}
-          />
+        {/* Script tagline */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="font-script text-[oklch(0.68_0.15_65)] text-3xl md:text-4xl mb-4 drop-shadow-lg"
+        >
+          Bay Area Live Music
+        </motion.p>
 
-          <motion.p
-            className="font-body text-base md:text-lg text-[oklch(0.85_0.02_75)] max-w-2xl mx-auto leading-relaxed mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9, duration: 0.8 }}
-          >
-            Warm, intimate acoustic music for wineries, wine bars, restaurants,
-            and private events throughout the San Francisco Bay Area.
-          </motion.p>
+        {/* Names */}
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="font-display text-5xl md:text-7xl text-[oklch(0.96_0.025_75)] leading-tight mb-2 drop-shadow-xl"
+        >
+          Ron Butron
+        </motion.h1>
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="font-display text-4xl md:text-6xl text-[oklch(0.88_0.025_75)] italic leading-tight mb-2 drop-shadow-xl"
+        >
+          <span className="font-normal text-[oklch(0.68_0.15_65)]">&amp;</span> Rebecca Barnes
+        </motion.h1>
 
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.7 }}
+        {/* Divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.9, duration: 0.7 }}
+          className="golden-divider max-w-[120px] mx-auto my-6"
+        />
+
+        {/* Tagline */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.0, duration: 0.8 }}
+          className="font-body text-[oklch(0.88_0.025_75)] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 drop-shadow"
+        >
+          Warm, intimate acoustic music for wineries, wine bars, restaurants, and private events throughout the San Francisco Bay Area.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, duration: 0.7 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <button
+            onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+            className="btn-amber text-base px-8 py-4"
           >
-            <button
-              onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-amber"
-            >
-              <Music size={16} />
-              Book Us for Your Venue
-            </button>
-            <button
-              onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}
-              className="btn-outline-cream"
-            >
-              Meet the Duo
-            </button>
-          </motion.div>
+            <Music size={18} />
+            Book Us for Your Venue
+          </button>
+          <button
+            onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}
+            className="btn-outline-cream text-base px-8 py-4"
+          >
+            Meet the Duo
+          </button>
         </motion.div>
       </div>
 
@@ -519,7 +574,7 @@ function AboutSection() {
         <FadeUp className="text-center mb-16">
           <p className="section-label mb-3">The Duo</p>
           <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.22_0.05_35)] leading-tight mb-4">
-            Meet Rebecca & Ronnie
+            Meet Ron & Rebecca
           </h2>
           <div className="golden-divider max-w-[80px] mx-auto mb-6" />
           <p className="font-body text-[oklch(0.45_0.04_50)] text-lg max-w-2xl mx-auto leading-relaxed">
@@ -534,22 +589,22 @@ function AboutSection() {
               <div className="absolute -top-4 -left-4 w-full h-full border-2 border-[oklch(0.68_0.15_65/0.35)] rounded-sm pointer-events-none" />
               <img
                 src={IMAGES.duoPhoto}
-                alt="Rebecca Barnes and Ron Butron — R & R Acoustic Duo"
+                alt="Ron Butron and Rebecca Barnes — R & R Acoustic Duo"
                 className="relative w-full h-[520px] object-cover object-top rounded-sm shadow-2xl"
               />
-              {/* Name overlay */}
+              {/* Name overlay — Ron first */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.92)] to-transparent px-6 py-6 rounded-b-sm">
                 <div className="flex justify-around">
+                  <div className="text-center">
+                    <Guitar size={16} className="text-[oklch(0.68_0.15_65)] mx-auto mb-1" />
+                    <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Ron Butron</p>
+                    <p className="font-body text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-wider">Guitar & Vocals</p>
+                  </div>
+                  <div className="w-px bg-[oklch(0.68_0.15_65/0.3)]" />
                   <div className="text-center">
                     <Mic2 size={16} className="text-[oklch(0.68_0.15_65)] mx-auto mb-1" />
                     <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Rebecca Barnes</p>
                     <p className="font-body text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-wider">Vocals</p>
-                  </div>
-                  <div className="w-px bg-[oklch(0.68_0.15_65/0.3)]" />
-                  <div className="text-center">
-                    <Guitar size={16} className="text-[oklch(0.68_0.15_65)] mx-auto mb-1" />
-                    <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Ron Butron</p>
-                    <p className="font-body text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-wider">Acoustic Guitar</p>
                   </div>
                 </div>
               </div>
@@ -572,14 +627,14 @@ function AboutSection() {
               From intimate winery afternoons in Morgan Hill to vibrant wine bars in Gilroy and community events in Hollister, R & R knows how to read a room and create an atmosphere that keeps guests engaged, relaxed, and coming back for more.
             </p>
             <p className="font-body text-[oklch(0.35_0.06_40)] leading-relaxed mb-8">
-              Rebecca's warm, expressive vocals paired with Ronnie's masterful acoustic guitar create a sound that is both intimate and captivating — perfect for any venue looking to elevate the guest experience.
+              Ron's masterful acoustic guitar and vocals paired with Rebecca's warm, expressive voice create a sound that is both intimate and captivating — perfect for any venue looking to elevate the guest experience.
             </p>
 
-            {/* Member Cards */}
+            {/* Member Cards — Ron first */}
             <div className="grid grid-cols-2 gap-4 mb-8">
               {[
-                { name: "Rebecca Barnes", role: "Vocals & Harmonies", icon: <Mic2 size={20} />, desc: "Warm, expressive voice that fills any room with emotion and energy." },
-                { name: "Ron Butron", role: "Acoustic Guitar", icon: <Guitar size={20} />, desc: "Masterful fingerpicking and rhythm guitar that anchors every performance." },
+                { name: "Ron Butron", role: "Guitar & Vocals", icon: <Guitar size={20} />, desc: "Masterful fingerpicking, rhythm guitar, and lead vocals that anchor every performance." },
+                { name: "Rebecca Barnes", role: "Vocals", icon: <Mic2 size={20} />, desc: "Warm, expressive voice that fills any room with emotion and energy." },
               ].map((member) => (
                 <div key={member.name} className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-4 hover:border-[oklch(0.68_0.15_65/0.5)] hover:shadow-md transition-all duration-300">
                   <div className="text-[oklch(0.68_0.15_65)] mb-2">{member.icon}</div>
@@ -712,12 +767,185 @@ function VenuesSection() {
                     className="inline-flex items-center gap-1 text-[oklch(0.68_0.15_65)] text-xs font-body font-bold uppercase tracking-wider hover:text-[oklch(0.96_0.025_75)] transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    Visit Website <ExternalLink size={11} />
+                    Visit Venue <ExternalLink size={10} />
                   </a>
                 </motion.div>
               </motion.div>
             </FadeUp>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Gig Calendar Section ─────────────────────────────────────
+function CalendarSection() {
+  const now = new Date();
+
+  // Parse and sort upcoming gigs
+  const upcoming = GIG_EVENTS
+    .map((g) => ({ ...g, dateObj: new Date(g.date + "T12:00:00") }))
+    .filter((g) => g.dateObj >= new Date(now.getFullYear(), now.getMonth(), now.getDate()))
+    .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+
+  const past = GIG_EVENTS
+    .map((g) => ({ ...g, dateObj: new Date(g.date + "T12:00:00") }))
+    .filter((g) => g.dateObj < new Date(now.getFullYear(), now.getMonth(), now.getDate()))
+    .sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime())
+    .slice(0, 4);
+
+  const formatDate = (d: Date) =>
+    d.toLocaleDateString("en-US", { weekday: "short", month: "long", day: "numeric", year: "numeric" });
+
+  const formatMonth = (d: Date) =>
+    d.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
+
+  const formatDay = (d: Date) =>
+    d.toLocaleDateString("en-US", { day: "numeric" });
+
+  return (
+    <section id="calendar" className="py-24 bg-[oklch(0.93_0.02_75)]">
+      <div className="container">
+        <FadeUp className="text-center mb-16">
+          <p className="section-label mb-3">Live Shows</p>
+          <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.22_0.05_35)] leading-tight mb-4">
+            Upcoming Performances
+          </h2>
+          <div className="golden-divider max-w-[80px] mx-auto mb-6" />
+          <p className="font-body text-[oklch(0.45_0.04_50)] text-lg max-w-2xl mx-auto">
+            Catch Ron & Rebecca live at one of their regular venues across the Bay Area. Check back often — new shows are added regularly.
+          </p>
+        </FadeUp>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Upcoming Shows List */}
+          <div className="lg:col-span-2">
+            <FadeUp>
+              <div className="space-y-3">
+                {upcoming.length === 0 ? (
+                  <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-10 text-center">
+                    <Calendar size={32} className="text-[oklch(0.68_0.15_65)] mx-auto mb-3" />
+                    <p className="font-display text-xl text-[oklch(0.22_0.05_35)] mb-2">New Shows Coming Soon</p>
+                    <p className="font-body text-sm text-[oklch(0.55_0.04_55)]">Follow @rnr_music_duo on Instagram for the latest announcements.</p>
+                  </div>
+                ) : (
+                  upcoming.map((gig, i) => (
+                    <motion.div
+                      key={`${gig.date}-${gig.venue}`}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.07, duration: 0.5 }}
+                      viewport={{ once: true }}
+                      className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 flex items-center gap-5 hover:border-[oklch(0.68_0.15_65/0.6)] hover:shadow-md transition-all duration-300 group"
+                    >
+                      {/* Date badge */}
+                      <div className="flex-shrink-0 w-16 h-16 bg-[oklch(0.22_0.05_35)] rounded-sm flex flex-col items-center justify-center">
+                        <span className="font-body text-[0.6rem] font-bold text-[oklch(0.68_0.15_65)] uppercase tracking-widest leading-none">
+                          {formatMonth(gig.dateObj)}
+                        </span>
+                        <span className="font-display text-2xl font-bold text-[oklch(0.96_0.025_75)] leading-none mt-0.5">
+                          {formatDay(gig.dateObj)}
+                        </span>
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-display text-lg text-[oklch(0.22_0.05_35)] font-semibold truncate group-hover:text-[oklch(0.55_0.12_55)] transition-colors">
+                          {gig.venue}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+                          <span className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1">
+                            <MapPin size={11} /> {gig.location}
+                          </span>
+                          <span className="font-body text-xs text-[oklch(0.55_0.04_55)] flex items-center gap-1">
+                            <Clock size={11} /> {gig.time}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Link */}
+                      {gig.url ? (
+                        <a
+                          href={gig.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-shrink-0 text-[oklch(0.68_0.15_65)] hover:text-[oklch(0.55_0.12_55)] transition-colors"
+                          aria-label={`Visit ${gig.venue}`}
+                        >
+                          <ExternalLink size={16} />
+                        </a>
+                      ) : (
+                        <div className="flex-shrink-0 w-4" />
+                      )}
+                    </motion.div>
+                  ))
+                )}
+              </div>
+            </FadeUp>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Book CTA */}
+            <FadeUp delay={100}>
+              <div className="bg-[oklch(0.22_0.05_35)] rounded-sm p-6">
+                <img src={IMAGES.logoLight} alt="R & R" className="h-10 w-auto mb-4" />
+                <h3 className="font-display text-xl text-[oklch(0.96_0.025_75)] mb-2">
+                  Want R & R at Your Venue?
+                </h3>
+                <p className="font-body text-sm text-[oklch(0.75_0.02_75)] leading-relaxed mb-5">
+                  Ron & Rebecca are available for bookings throughout the Bay Area. Reach out to check availability for your date.
+                </p>
+                <button
+                  onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+                  className="btn-amber w-full justify-center"
+                >
+                  <Music size={15} />
+                  Book a Show
+                </button>
+              </div>
+            </FadeUp>
+
+            {/* Past Shows */}
+            {past.length > 0 && (
+              <FadeUp delay={200}>
+                <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5">
+                  <p className="section-label mb-4">Recent Shows</p>
+                  <div className="space-y-3">
+                    {past.map((gig) => (
+                      <div key={`past-${gig.date}-${gig.venue}`} className="flex items-center gap-3 opacity-60">
+                        <div className="flex-shrink-0 w-10 h-10 bg-[oklch(0.93_0.02_75)] rounded-sm flex flex-col items-center justify-center">
+                          <span className="font-body text-[0.5rem] font-bold text-[oklch(0.55_0.04_55)] uppercase leading-none">{formatMonth(gig.dateObj)}</span>
+                          <span className="font-display text-base font-bold text-[oklch(0.35_0.06_40)] leading-none">{formatDay(gig.dateObj)}</span>
+                        </div>
+                        <div>
+                          <p className="font-body text-xs font-semibold text-[oklch(0.35_0.06_40)]">{gig.venue}</p>
+                          <p className="font-body text-xs text-[oklch(0.55_0.04_55)]">{gig.location}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </FadeUp>
+            )}
+
+            {/* Instagram follow */}
+            <FadeUp delay={300}>
+              <a
+                href="https://www.instagram.com/rnr_music_duo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-gradient-to-r from-[oklch(0.55_0.2_20)] to-[oklch(0.55_0.18_310)] rounded-sm p-4 hover:opacity-90 transition-opacity"
+              >
+                <Instagram size={22} className="text-white flex-shrink-0" />
+                <div>
+                  <p className="font-body text-xs font-bold text-white uppercase tracking-wider">Follow for Updates</p>
+                  <p className="font-body text-sm text-white/80">@rnr_music_duo</p>
+                </div>
+              </a>
+            </FadeUp>
+          </div>
         </div>
       </div>
     </section>
@@ -739,7 +967,7 @@ function ServicesSection() {
               </h2>
               <div className="golden-divider max-w-[80px] mb-8" />
               <p className="font-body text-[oklch(0.35_0.06_40)] text-lg leading-relaxed mb-10">
-                R & R Acoustic Duo adapts to the unique character of every venue and event. Whether you need background ambiance or an engaging live performance, Rebecca and Ronnie deliver music that enhances the experience for your guests.
+                R & R Acoustic Duo adapts to the unique character of every venue and event. Whether you need background ambiance or an engaging live performance, Ron and Rebecca deliver music that enhances the experience for your guests.
               </p>
             </FadeUp>
 
@@ -789,7 +1017,7 @@ function ServicesSection() {
   );
 }
 
-// ─── Coverage Section ─────────────────────────────────────────
+// ─── Coverage Section (Live Google Map) ──────────────────────
 function CoverageSection() {
   const areas = [
     "San Francisco Bay Area", "Silicon Valley", "San Jose", "Morgan Hill",
@@ -797,19 +1025,53 @@ function CoverageSection() {
     "South Bay", "East Bay", "Peninsula", "Monterey Bay Area",
   ];
 
+  // Center between Bay Area and Hollister, zoom 9 shows both clearly
+  const mapCenter = { lat: 37.15, lng: -121.65 };
+  const mapZoom = 9;
+
+  const venueMarkers = VENUES.map((v) => ({
+    position: v.coords,
+    title: `${v.name} — ${v.location}`,
+  }));
+
+  const handleMapReady = (map: google.maps.Map) => {
+    venueMarkers.forEach((marker) => {
+      const pin = document.createElement("div");
+      pin.style.cssText = `
+        width: 32px; height: 32px;
+        background: oklch(0.68 0.15 65);
+        border: 3px solid oklch(0.22 0.05 35);
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      `;
+      new google.maps.marker.AdvancedMarkerElement({
+        map,
+        position: marker.position,
+        title: marker.title,
+        content: pin,
+      });
+    });
+  };
+
   return (
     <section id="coverage" className="py-24 bg-[oklch(0.93_0.02_75)]">
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <FadeUp>
-            <div className="relative rounded-sm overflow-hidden shadow-2xl">
-              <img
-                src={IMAGES.map}
-                alt="R & R Acoustic Duo service area — Bay Area, Morgan Hill, Gilroy, Hollister"
-                className="w-full h-[420px] object-cover"
-                loading="lazy"
+            <div className="relative rounded-sm overflow-hidden shadow-2xl border border-[oklch(0.88_0.025_70)]">
+              <MapView
+                className="w-full h-[460px]"
+                initialCenter={mapCenter}
+                initialZoom={mapZoom}
+                onMapReady={handleMapReady}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.3)] to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.7)] to-transparent px-4 py-3 pointer-events-none">
+                <p className="font-body text-xs text-[oklch(0.96_0.025_75)] flex items-center gap-1.5">
+                  <MapPin size={11} className="text-[oklch(0.68_0.15_65)]" />
+                  Venue pins: P&V Winery · Vines & Pints · Crave Wine · Twin Oaks
+                </p>
+              </div>
             </div>
           </FadeUp>
 
@@ -821,7 +1083,7 @@ function CoverageSection() {
             </h2>
             <div className="golden-divider max-w-[80px] mb-6" />
             <p className="font-body text-[oklch(0.35_0.06_40)] text-lg leading-relaxed mb-8">
-              Based in the San Francisco Bay Area, Rebecca and Ronnie regularly perform throughout the South Bay, Silicon Valley, and the scenic communities of Morgan Hill, Gilroy, and Hollister. We're available for venues within a comfortable travel radius.
+              Based in the San Francisco Bay Area, Ron and Rebecca regularly perform throughout the South Bay, Silicon Valley, and the scenic communities of Morgan Hill, Gilroy, and Hollister. Available for venues within a comfortable travel radius.
             </p>
 
             <div className="flex flex-wrap gap-2 mb-10">
@@ -901,6 +1163,158 @@ function TestimonialsSection() {
   );
 }
 
+// ─── Flyer Template Section ───────────────────────────────────
+function FlyerSection() {
+  const [selectedVenue, setSelectedVenue] = useState(VENUES[0]);
+  const [customDate, setCustomDate] = useState("Saturday, June 7, 2025");
+  const [customTime, setCustomTime] = useState("2:00 PM – 5:00 PM");
+  const [customNote, setCustomNote] = useState("Free to attend · All ages welcome");
+
+  return (
+    <section id="flyer" className="py-24 bg-[oklch(0.97_0.015_75)]">
+      <div className="container">
+        <FadeUp className="text-center mb-16">
+          <p className="section-label mb-3">Promote Your Show</p>
+          <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.22_0.05_35)] leading-tight mb-4">
+            Gig Flyer Template
+          </h2>
+          <div className="golden-divider max-w-[80px] mx-auto mb-6" />
+          <p className="font-body text-[oklch(0.45_0.04_50)] text-lg max-w-2xl mx-auto">
+            Use this template to promote upcoming shows. Fill in the details, screenshot or print the preview, and share on social media or at your venue.
+          </p>
+        </FadeUp>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-5xl mx-auto">
+          {/* Controls */}
+          <FadeUp>
+            <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-7 space-y-5">
+              <h3 className="font-display text-xl text-[oklch(0.22_0.05_35)] mb-2">Customize Flyer</h3>
+              <div className="golden-divider mb-6" />
+
+              <div>
+                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Venue</label>
+                <select
+                  value={selectedVenue.name}
+                  onChange={(e) => setSelectedVenue(VENUES.find((v) => v.name === e.target.value) || VENUES[0])}
+                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
+                >
+                  {VENUES.map((v) => (
+                    <option key={v.name} value={v.name}>{v.name} — {v.location}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Date</label>
+                <input
+                  type="text"
+                  value={customDate}
+                  onChange={(e) => setCustomDate(e.target.value)}
+                  placeholder="e.g. Saturday, June 7, 2025"
+                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Time</label>
+                <input
+                  type="text"
+                  value={customTime}
+                  onChange={(e) => setCustomTime(e.target.value)}
+                  placeholder="e.g. 2:00 PM – 5:00 PM"
+                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Additional Note</label>
+                <input
+                  type="text"
+                  value={customNote}
+                  onChange={(e) => setCustomNote(e.target.value)}
+                  placeholder="e.g. Free to attend · All ages welcome"
+                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
+                />
+              </div>
+
+              <div className="pt-2">
+                <p className="font-body text-xs text-[oklch(0.55_0.04_55)] leading-relaxed bg-[oklch(0.93_0.02_75)] rounded-sm p-3">
+                  <strong className="text-[oklch(0.35_0.06_40)]">How to use:</strong> Customize the fields above, then take a screenshot of the flyer preview to share on Instagram, Facebook, or print for your venue. A print-ready PDF export can be added — just ask!
+                </p>
+              </div>
+            </div>
+          </FadeUp>
+
+          {/* Flyer Preview */}
+          <FadeUp delay={200}>
+            <div className="sticky top-24">
+              <p className="section-label mb-3 text-center">Preview</p>
+              {/* Flyer card */}
+              <div
+                id="flyer-preview"
+                className="relative overflow-hidden rounded-sm shadow-2xl"
+                style={{ aspectRatio: "4/5", background: "oklch(0.22 0.05 35)" }}
+              >
+                {/* Background venue image */}
+                <img
+                  src={selectedVenue.image}
+                  alt={selectedVenue.name}
+                  className="absolute inset-0 w-full h-full object-cover opacity-30"
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.6)] via-[oklch(0.22_0.05_35/0.5)] to-[oklch(0.22_0.05_35/0.9)]" />
+
+                {/* Content */}
+                <div className="relative z-10 h-full flex flex-col items-center justify-between p-8 text-center">
+                  {/* Top */}
+                  <div>
+                    <p className="font-body text-[0.6rem] font-bold tracking-[0.3em] uppercase text-[oklch(0.68_0.15_65)] mb-3">
+                      Live Acoustic Music
+                    </p>
+                    <img src={IMAGES.logoLight} alt="R & R" className="h-16 w-auto mx-auto mb-3 drop-shadow-xl" />
+                    <p className="font-script text-[oklch(0.68_0.15_65)] text-2xl">Ron Butron & Rebecca Barnes</p>
+                  </div>
+
+                  {/* Middle */}
+                  <div>
+                    <div className="golden-divider max-w-[60px] mx-auto mb-5" />
+                    <p className="font-display text-3xl font-bold text-[oklch(0.96_0.025_75)] mb-1 leading-tight">
+                      {selectedVenue.name}
+                    </p>
+                    <p className="font-body text-sm text-[oklch(0.75_0.02_75)] flex items-center justify-center gap-1 mb-6">
+                      <MapPin size={12} /> {selectedVenue.location}
+                    </p>
+                    <div className="bg-[oklch(0.68_0.15_65)] px-6 py-3 rounded-sm inline-block mb-3">
+                      <p className="font-display text-lg font-bold text-[oklch(0.15_0.04_30)]">{customDate}</p>
+                    </div>
+                    <p className="font-body text-sm text-[oklch(0.88_0.025_75)] flex items-center justify-center gap-1.5">
+                      <Clock size={13} /> {customTime}
+                    </p>
+                  </div>
+
+                  {/* Bottom */}
+                  <div>
+                    <div className="golden-divider max-w-[60px] mx-auto mb-4" />
+                    <p className="font-body text-xs text-[oklch(0.75_0.02_75)] mb-2">{customNote}</p>
+                    <p className="font-body text-[0.6rem] text-[oklch(0.55_0.02_60)] uppercase tracking-widest">
+                      @rnr_music_duo
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <p className="font-body text-xs text-[oklch(0.55_0.04_55)] text-center mt-3 flex items-center justify-center gap-1.5">
+                <Download size={12} />
+                Screenshot or print this preview to share
+              </p>
+            </div>
+          </FadeUp>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Contact Section ──────────────────────────────────────────
 function ContactSection() {
   const [formData, setFormData] = useState({
@@ -924,7 +1338,7 @@ function ContactSection() {
           </h2>
           <div className="golden-divider max-w-[80px] mx-auto mb-6" />
           <p className="font-body text-[oklch(0.35_0.06_40)] text-lg max-w-2xl mx-auto">
-            Ready to bring live acoustic music to your venue or event? Reach out to Rebecca and Ronnie — they'd love to discuss how R & R can elevate your guests' experience.
+            Ready to bring live acoustic music to your venue or event? Reach out to Ron and Rebecca — they'd love to discuss how R & R can elevate your guests' experience.
           </p>
         </FadeUp>
 
@@ -937,7 +1351,7 @@ function ContactSection() {
                   Let's Make Music Happen
                 </h3>
                 <p className="font-body text-[oklch(0.45_0.04_50)] leading-relaxed">
-                  Whether you're a winery looking for weekend entertainment, a restaurant wanting to elevate the dining experience, or planning a private event — Rebecca and Ronnie are here to make it memorable.
+                  Whether you're a winery looking for weekend entertainment, a restaurant wanting to elevate the dining experience, or planning a private event — Ron and Rebecca are here to make it memorable.
                 </p>
               </div>
 
@@ -968,17 +1382,17 @@ function ContactSection() {
                 </div>
               </div>
 
-              {/* Members quick info */}
+              {/* Members quick info — Ron first */}
               <div className="bg-[oklch(0.22_0.05_35)] rounded-sm p-5">
                 <img src={IMAGES.logoLight} alt="R & R logo" className="h-10 w-auto mb-3" />
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <Mic2 size={14} className="text-[oklch(0.68_0.15_65)]" />
-                    <p className="font-body text-sm text-[oklch(0.96_0.025_75)]">Rebecca Barnes — Vocals</p>
+                    <Guitar size={14} className="text-[oklch(0.68_0.15_65)]" />
+                    <p className="font-body text-sm text-[oklch(0.96_0.025_75)]">Ron Butron — Guitar & Vocals</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Guitar size={14} className="text-[oklch(0.68_0.15_65)]" />
-                    <p className="font-body text-sm text-[oklch(0.96_0.025_75)]">Ron Butron — Acoustic Guitar</p>
+                    <Mic2 size={14} className="text-[oklch(0.68_0.15_65)]" />
+                    <p className="font-body text-sm text-[oklch(0.96_0.025_75)]">Rebecca Barnes — Vocals</p>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-[oklch(0.96_0.025_75/0.1)]">
@@ -1009,7 +1423,7 @@ function ContactSection() {
                 </div>
                 <h3 className="font-display text-2xl text-[oklch(0.22_0.05_35)] mb-3">Message Received!</h3>
                 <p className="font-body text-[oklch(0.45_0.04_50)] leading-relaxed mb-6">
-                  Thank you for reaching out. Rebecca and Ronnie will be in touch soon to discuss your event and availability.
+                  Thank you for reaching out. Ron and Rebecca will be in touch soon to discuss your event and availability.
                 </p>
                 <button onClick={() => setSubmitted(false)} className="btn-amber">
                   Send Another Message
@@ -1106,25 +1520,27 @@ function Footer() {
           <div>
             <img src={IMAGES.logoLight} alt="R & R Acoustic Duo" className="h-12 w-auto mb-2" />
             <span className="font-body text-[0.6rem] tracking-[0.2em] uppercase text-[oklch(0.55_0.02_60)] block mb-4">
-              Rebecca Barnes & Ron Butron
+              Ron Butron & Rebecca Barnes
             </span>
             <p className="font-body text-sm leading-relaxed text-[oklch(0.65_0.02_70)]">
               Warm, intimate acoustic music for wineries, wine bars, restaurants, and private events throughout the San Francisco Bay Area.
             </p>
           </div>
           <div>
-            <p className="font-body text-xs uppercase tracking-widest text-[oklch(0.68_0.15_65)] mb-4">Quick Links</p>
+            <p className="font-body text-xs font-bold uppercase tracking-[0.15em] text-[oklch(0.55_0.02_60)] mb-4">Quick Links</p>
             <div className="space-y-2">
               {[
-                { label: "About the Duo", id: "#about" },
-                { label: "Featured Venues", id: "#venues" },
-                { label: "Services", id: "#services" },
-                { label: "Coverage Area", id: "#coverage" },
-                { label: "Book Us", id: "#contact" },
+                { label: "About the Duo", href: "#about" },
+                { label: "Featured Venues", href: "#venues" },
+                { label: "Upcoming Shows", href: "#calendar" },
+                { label: "Services", href: "#services" },
+                { label: "Coverage Area", href: "#coverage" },
+                { label: "Gig Flyer", href: "#flyer" },
+                { label: "Book Us", href: "#contact" },
               ].map((link) => (
                 <button
                   key={link.label}
-                  onClick={() => document.querySelector(link.id)?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => document.querySelector(link.href)?.scrollIntoView({ behavior: "smooth" })}
                   className="block font-body text-sm text-[oklch(0.65_0.02_70)] hover:text-[oklch(0.68_0.15_65)] transition-colors"
                 >
                   {link.label}
@@ -1133,57 +1549,53 @@ function Footer() {
             </div>
           </div>
           <div>
-            <p className="font-body text-xs uppercase tracking-widest text-[oklch(0.68_0.15_65)] mb-4">Connect</p>
+            <p className="font-body text-xs font-bold uppercase tracking-[0.15em] text-[oklch(0.55_0.02_60)] mb-4">Connect</p>
             <a
               href="https://www.instagram.com/rnr_music_duo"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 text-[oklch(0.65_0.02_70)] hover:text-[oklch(0.68_0.15_65)] transition-colors mb-3"
+              className="flex items-center gap-3 group mb-4"
             >
-              <Instagram size={16} />
-              <span className="font-body text-sm">@rnr_music_duo</span>
+              <div className="w-9 h-9 bg-[oklch(0.96_0.025_75/0.08)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.68_0.15_65)] transition-colors">
+                <Instagram size={16} className="text-[oklch(0.65_0.02_70)] group-hover:text-[oklch(0.22_0.05_35)] transition-colors" />
+              </div>
+              <span className="font-body text-sm text-[oklch(0.65_0.02_70)] group-hover:text-[oklch(0.68_0.15_65)] transition-colors">@rnr_music_duo</span>
             </a>
-            <div className="flex items-center gap-3 text-[oklch(0.65_0.02_70)] mb-6">
-              <MapPin size={16} />
-              <span className="font-body text-sm">San Francisco Bay Area, CA</span>
-            </div>
-            <div>
-              <p className="font-body text-xs text-[oklch(0.55_0.02_60)] mb-1">Members:</p>
-              <p className="font-body text-xs text-[oklch(0.55_0.02_60)]">Rebecca Barnes · Ron Butron</p>
-              <p className="font-body text-xs text-[oklch(0.45_0.02_50)] mt-2">
-                Morgan Hill · Gilroy · Hollister · Bay Area
-              </p>
-            </div>
+            <p className="font-body text-sm text-[oklch(0.65_0.02_70)] flex items-start gap-2">
+              <MapPin size={14} className="text-[oklch(0.68_0.15_65)] mt-0.5 flex-shrink-0" />
+              San Francisco Bay Area, CA<br />
+              Morgan Hill · Gilroy · Hollister
+            </p>
           </div>
         </div>
 
-        <div className="golden-divider mb-6" />
-
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-body text-xs text-[oklch(0.45_0.02_55)]">
-            © {new Date().getFullYear()} R & R Acoustic Duo — Rebecca Barnes & Ron Butron. All rights reserved.
-          </p>
-          <p className="font-body text-xs text-[oklch(0.45_0.02_55)]">
-            Bay Area Acoustic Music · Available for Hire
-          </p>
-          <p className="font-body text-xs text-[oklch(0.35_0.02_45)] mt-2 md:mt-0">
-            Website by{" "}
-            <a
-              href="https://localforgeweb.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[oklch(0.45_0.04_50)] hover:text-[oklch(0.68_0.15_65)] transition-colors duration-200 underline-offset-2 hover:underline"
-            >
-              LocalForge
-            </a>
-          </p>
+        <div className="border-t border-[oklch(0.96_0.025_75/0.08)] pt-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="font-body text-xs text-[oklch(0.45_0.02_55)]">
+              © {new Date().getFullYear()} R & R Acoustic Duo — Ron Butron & Rebecca Barnes. All rights reserved.
+            </p>
+            <p className="font-body text-xs text-[oklch(0.45_0.02_55)]">
+              Bay Area Acoustic Music · Available for Hire
+            </p>
+            <p className="font-body text-xs text-[oklch(0.35_0.02_45)] mt-2 md:mt-0">
+              Website by{" "}
+              <a
+                href="https://localforgeweb.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[oklch(0.45_0.04_50)] hover:text-[oklch(0.68_0.15_65)] transition-colors duration-200 underline-offset-2 hover:underline"
+              >
+                LocalForge
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
 
-// ─── Main Home Component ──────────────────────────────────────
+// ─── Page Assembly ────────────────────────────────────────────
 export default function Home() {
   return (
     <div className="min-h-screen">
@@ -1191,9 +1603,11 @@ export default function Home() {
       <HeroSection />
       <AboutSection />
       <VenuesSection />
+      <CalendarSection />
       <ServicesSection />
       <CoverageSection />
       <TestimonialsSection />
+      <FlyerSection />
       <ContactSection />
       <Footer />
     </div>
