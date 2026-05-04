@@ -416,7 +416,7 @@ function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 scale-125">
         <img
           src={IMAGES.hero}
           alt="R & R Acoustic Duo performing live"
