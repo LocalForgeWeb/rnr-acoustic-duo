@@ -15,6 +15,7 @@ import { trpc } from "@/lib/trpc";
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
   hero: "/manus-storage/C5D4D096-E8E3-4C44-A96A-965C24E643FB_0493c1fe.png",
+  heroMobile: "/manus-storage/hero_mobile_4ec86e03.png",
   logoLight: "/manus-storage/rnr_logo_light_9cbea23b.png",
   logoDark: "/manus-storage/rnr_logo_5be2a5ae.png",
   duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
@@ -417,10 +418,17 @@ function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
+        {/* Mobile hero image */}
+        <img
+          src={IMAGES.heroMobile}
+          alt="R & R Acoustic Duo performing live"
+          className="w-full h-full object-cover object-center sm:hidden"
+        />
+        {/* Desktop hero image */}
         <img
           src={IMAGES.hero}
           alt="R & R Acoustic Duo performing live"
-          className="w-full h-full object-cover object-left sm:object-center"
+          className="w-full h-full object-cover object-center hidden sm:block"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.55)] via-[oklch(0.22_0.05_35/0.45)] to-[oklch(0.22_0.05_35/0.75)]" />
       </div>
