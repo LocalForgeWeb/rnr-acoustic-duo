@@ -14,7 +14,7 @@ import { trpc } from "@/lib/trpc";
 
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
-  hero: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
+  hero: "/manus-storage/C5D4D096-E8E3-4C44-A96A-965C24E643FB_0493c1fe.png",
   logoLight: "/manus-storage/rnr_logo_light_9cbea23b.png",
   logoDark: "/manus-storage/rnr_logo_5be2a5ae.png",
   duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
@@ -679,7 +679,7 @@ function ReelSection() {
         </FadeUp>
 
         <FadeUp className="flex justify-center">
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-md border-4 border-[oklch(0.68_0.15_65)] rounded-sm shadow-2xl overflow-hidden bg-[oklch(0.97_0.015_75)]">
             <iframe
               src="https://www.instagram.com/reel/C8EKqPEOl1z/embed/captioned/"
               width="100%"
@@ -687,7 +687,7 @@ function ReelSection() {
               frameBorder="0"
               scrolling="no"
               allowTransparency
-              className="rounded-sm shadow-lg"
+              className="rounded-none"
             />
           </div>
         </FadeUp>
@@ -1263,16 +1263,16 @@ function CoverageSection() {
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <FadeUp>
-            <div className="relative rounded-sm overflow-hidden shadow-2xl border border-[oklch(0.88_0.025_70)]">
+            <div className="relative rounded-sm overflow-hidden shadow-2xl border-4 border-[oklch(0.68_0.15_65)]">
               <MapView
                 className="w-full h-[460px]"
                 initialCenter={mapCenter}
                 initialZoom={mapZoom}
                 onMapReady={handleMapReady}
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.7)] to-transparent px-4 py-3 pointer-events-none">
-                <p className="font-body text-xs text-[oklch(0.96_0.025_75)] flex items-center gap-1.5">
-                  <MapPin size={11} className="text-[oklch(0.68_0.15_65)]" />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.85)] to-transparent px-4 py-4 pointer-events-none">
+                <p className="font-body text-xs text-[oklch(0.96_0.025_75)] flex items-center gap-1.5 font-semibold">
+                  <MapPin size={12} className="text-[oklch(0.68_0.15_65)]" />
                   Venue pins: P&V Winery · Vines & Pints · Crave Wine · Twin Oaks
                 </p>
               </div>
