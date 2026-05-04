@@ -416,11 +416,11 @@ function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 scale-125">
+      <div className="absolute inset-0">
         <img
           src={IMAGES.hero}
           alt="R & R Acoustic Duo performing live"
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-left sm:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.55)] via-[oklch(0.22_0.05_35/0.45)] to-[oklch(0.22_0.05_35/0.75)]" />
       </div>
