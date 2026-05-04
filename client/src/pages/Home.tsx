@@ -1249,14 +1249,23 @@ function CoverageSection() {
   const handleMapReady = (map: google.maps.Map) => {
     venueMarkers.forEach((marker) => {
       const pin = document.createElement("div");
-      pin.style.cssText = `
-        width: 32px; height: 32px;
-        background: oklch(0.68 0.15 65);
-        border: 3px solid oklch(0.22 0.05 35);
-        border-radius: 50% 50% 50% 0;
-        transform: rotate(-45deg);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      pin.innerHTML = `
+        <svg width="40" height="50" viewBox="0 0 40 50" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4))">
+          <defs>
+            <linearGradient id="pinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#8b4513;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#5c2e0f;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <!-- Gold border -->
+          <path d="M 20 3 C 11 3, 3 11, 3 20 C 3 34, 20 47, 20 47 C 20 47, 37 34, 37 20 C 37 11, 29 3, 20 3 Z" fill="none" stroke="#d4af37" stroke-width="2.5"/>
+          <!-- Main teardrop body -->
+          <path d="M 20 5 C 12 5, 5 12, 5 20 C 5 32, 20 44, 20 44 C 20 44, 35 32, 35 20 C 35 12, 28 5, 20 5 Z" fill="url(#pinGrad)"/>
+          <!-- Inner circle -->
+          <circle cx="20" cy="19" r="7" fill="#cd7f32" opacity="0.9"/>
+        </svg>
       `;
+      pin.style.cssText = `display: flex; align-items: center; justify-content: center; width: 40px; height: 50px;`;
       new google.maps.marker.AdvancedMarkerElement({
         map,
         position: marker.position,
