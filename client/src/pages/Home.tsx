@@ -14,14 +14,14 @@ import { trpc } from "@/lib/trpc";
 
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
-  hero: "/manus-storage/hero_duo_71f55632.jpg",
+  hero: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
   logoLight: "/manus-storage/rnr_logo_light_9cbea23b.png",
   logoDark: "/manus-storage/rnr_logo_5be2a5ae.png",
-  duoPhoto: "/manus-storage/rebecca_ronnie_39ea52d3.jpg",
-  pandv: "/manus-storage/venue_pandv_winery_396f5546.jpg",
-  vinesAndPints: "/manus-storage/venue_vines_pints_5b77177b.jpg",
-  craveWine: "/manus-storage/venue_crave_wine_dd0adaa3.jpg",
-  twinOaks: "/manus-storage/venue_twin_oaks_535c7f71.jpg",
+  duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
+  pandv: "/manus-storage/IMG_6924_646c9e95.PNG",
+  vinesAndPints: "/manus-storage/IMG_6925_cd3cc598.PNG",
+  craveWine: "/manus-storage/IMG_6926_2afdcad9.JPG",
+  twinOaks: "/manus-storage/IMG_6927_f6e6eecf.JPG",
   map: "/manus-storage/bay_area_map_b5d6e45e.jpg",
   performance: "/manus-storage/acoustic_performance_a151795a.jpg",
 };
@@ -542,8 +542,10 @@ function AboutSection() {
         </FadeUp>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20" id="members">
+
+
           {/* Real Duo Photo */}
-          <FadeUp>
+          <FadeUp delay={200}>
             <div className="relative">
               <div className="absolute -top-4 -left-4 w-full h-full border-2 border-[oklch(0.68_0.15_65/0.35)] rounded-sm pointer-events-none" />
               <img
@@ -653,6 +655,40 @@ function AboutSection() {
                 </span>
               ))}
             </div>
+          </div>
+        </FadeUp>
+      </div>
+    </section>
+  );
+}
+
+// ─── Instagram Reel Section ───────────────────────────────────
+function ReelSection() {
+  return (
+    <section id="videos" className="py-24 bg-[oklch(0.97_0.015_75)]">
+      <div className="container">
+        <FadeUp className="text-center mb-16">
+          <p className="section-label mb-3">Watch Us Perform</p>
+          <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.22_0.05_35)] leading-tight mb-4">
+            Live Performances
+          </h2>
+          <div className="golden-divider max-w-[80px] mx-auto mb-6" />
+          <p className="font-body text-[oklch(0.45_0.04_50)] text-lg max-w-2xl mx-auto leading-relaxed">
+            Check out R & R in action at one of their favorite Bay Area venues.
+          </p>
+        </FadeUp>
+
+        <FadeUp className="flex justify-center">
+          <div className="w-full max-w-md">
+            <iframe
+              src="https://www.instagram.com/reel/C8EKqPEOl1z/embed/captioned/"
+              width="100%"
+              height="600"
+              frameBorder="0"
+              scrolling="no"
+              allowTransparency
+              className="rounded-sm shadow-lg"
+            />
           </div>
         </FadeUp>
       </div>
@@ -1771,6 +1807,7 @@ export default function Home() {
       <HeroSection />
       <AboutSection />
       <VenuesSection />
+      <ReelSection />
       <CalendarSection />
       <ServicesSection />
       <CoverageSection />
