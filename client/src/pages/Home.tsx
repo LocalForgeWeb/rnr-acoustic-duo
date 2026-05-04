@@ -19,7 +19,7 @@ const IMAGES = {
   logoLight: "/manus-storage/rnr_logo_light_9cbea23b.png",
   logoDark: "/manus-storage/rnr_logo_5be2a5ae.png",
   duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
-  pandv: "/manus-storage/IMG_6924_646c9e95.PNG",
+  pandv: "/manus-storage/IMG_6942_3ffdc999.JPG",
   vinesAndPints: "/manus-storage/IMG_6925_cd3cc598.PNG",
   craveWine: "/manus-storage/IMG_6926_2afdcad9.JPG",
   twinOaks: "/manus-storage/IMG_6927_f6e6eecf.JPG",
