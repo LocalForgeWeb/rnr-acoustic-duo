@@ -420,7 +420,7 @@ function HeroSection() {
         <img
           src={IMAGES.hero}
           alt="R & R Acoustic Duo performing live"
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-left md:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.55)] via-[oklch(0.22_0.05_35/0.45)] to-[oklch(0.22_0.05_35/0.75)]" />
       </div>
@@ -557,15 +557,15 @@ function AboutSection() {
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.92)] to-transparent px-6 py-6 rounded-b-sm">
                 <div className="flex justify-around">
                   <div className="text-center">
-                    <Guitar size={16} className="text-[oklch(0.68_0.15_65)] mx-auto mb-1" />
-                    <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Ron Butron</p>
-                    <p className="font-body text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-wider">Guitar & Vocals</p>
-                  </div>
-                  <div className="w-px bg-[oklch(0.68_0.15_65/0.3)]" />
-                  <div className="text-center">
                     <Mic2 size={16} className="text-[oklch(0.68_0.15_65)] mx-auto mb-1" />
                     <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Rebecca Barnes</p>
                     <p className="font-body text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-wider">Vocals</p>
+                  </div>
+                  <div className="w-px bg-[oklch(0.68_0.15_65/0.3)]" />
+                  <div className="text-center">
+                    <Guitar size={16} className="text-[oklch(0.68_0.15_65)] mx-auto mb-1" />
+                    <p className="font-display text-[oklch(0.96_0.025_75)] text-lg font-semibold">Ron Butron</p>
+                    <p className="font-body text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-wider">Guitar & Vocals</p>
                   </div>
                 </div>
               </div>
@@ -1263,17 +1263,22 @@ function CoverageSection() {
       <div className="container">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <FadeUp>
-            <div className="relative rounded-sm overflow-hidden shadow-2xl border-4 border-[oklch(0.68_0.15_65)]">
+            <div className="relative rounded-lg overflow-hidden shadow-2xl border-4 border-[oklch(0.68_0.15_65)]">
+              {/* Top info bar */}
+              <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.8)] to-transparent px-4 py-3 pointer-events-none z-10">
+                <p className="font-display text-xs text-[oklch(0.68_0.15_65)] uppercase tracking-widest font-semibold">Bay Area & Beyond</p>
+              </div>
               <MapView
                 className="w-full h-[460px]"
                 initialCenter={mapCenter}
                 initialZoom={mapZoom}
                 onMapReady={handleMapReady}
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.85)] to-transparent px-4 py-4 pointer-events-none">
-                <p className="font-body text-xs text-[oklch(0.96_0.025_75)] flex items-center gap-1.5 font-semibold">
-                  <MapPin size={12} className="text-[oklch(0.68_0.15_65)]" />
-                  Venue pins: P&V Winery · Vines & Pints · Crave Wine · Twin Oaks
+              {/* Bottom info bar */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[oklch(0.22_0.05_35/0.92)] via-[oklch(0.22_0.05_35/0.7)] to-transparent px-4 py-5 pointer-events-none">
+                <p className="font-body text-xs text-[oklch(0.96_0.025_75)] flex items-center gap-2 font-semibold">
+                  <MapPin size={13} className="text-[oklch(0.68_0.15_65)] flex-shrink-0" />
+                  <span>Venues: P&V Winery · Vines & Pints · Crave Wine · Twin Oaks</span>
                 </p>
               </div>
             </div>
