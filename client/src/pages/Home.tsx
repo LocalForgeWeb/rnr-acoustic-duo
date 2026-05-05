@@ -700,14 +700,17 @@ function ReelSection() {
         </FadeUp>
 
         <FadeUp className="flex justify-center">
-          <div className="w-full max-w-md border-4 border-[oklch(0.68_0.15_65)] rounded-sm shadow-2xl overflow-hidden bg-[oklch(0.97_0.015_75)]">
-            <a href="https://www.instagram.com/reel/DX8FqtmOov-/" target="_blank" rel="noopener noreferrer" className="block w-full h-96 bg-[oklch(0.97_0.015_75)] flex items-center justify-center text-center p-6">
-              <div>
-                <p className="font-body text-[oklch(0.45_0.04_50)] mb-3">Watch on Instagram</p>
-                <p className="font-display text-2xl text-[oklch(0.68_0.15_65)] mb-4">R & R Live Performance</p>
-                <p className="font-body text-sm text-[oklch(0.55_0.04_55)]">Click to view the full video on Instagram</p>
-              </div>
-            </a>
+          <div className="w-full max-w-2xl border-4 border-[oklch(0.68_0.15_65)] rounded-sm shadow-2xl overflow-hidden bg-[oklch(0.97_0.015_75)]">
+            <video
+              width="100%"
+              height="auto"
+              controls
+              className="w-full bg-[oklch(0.22_0.05_35)]"
+              poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'%3E%3Crect fill='%23222' width='1200' height='675'/%3E%3C/svg%3E"
+            >
+              <source src="/manus-storage/rnr_performance_0ae357d6.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </FadeUp>
       </div>
