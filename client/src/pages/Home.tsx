@@ -91,7 +91,7 @@ const VENUES = [
     location: "San Jose, CA",
     description: "Indigo Program K-8 public school in San Jose, where R & R brings live music to students and families for educational and cultural events.",
     image: IMAGES.indigoProgram,
-    url: "https://www.sanjoseusd.org/",
+    url: "http://indigoprogram.org",
     tag: "Public School",
     coords: { lat: 37.3382, lng: -121.8863 },
   },
@@ -702,7 +702,7 @@ function ReelSection() {
         <FadeUp className="flex justify-center">
           <div className="w-full max-w-md border-4 border-[oklch(0.68_0.15_65)] rounded-sm shadow-2xl overflow-hidden bg-[oklch(0.97_0.015_75)]">
             <iframe
-              src="https://www.instagram.com/reel/C8EKqPEOl1z/embed/captioned/"
+              src="https://www.instagram.com/reel/DX8FqtmOov-/embed/captioned/"
               width="100%"
               height="600"
               frameBorder="0"
@@ -1247,7 +1247,7 @@ function CoverageSection() {
   const areas = [
     "San Francisco Bay Area", "Silicon Valley", "San Jose", "Morgan Hill",
     "Gilroy", "Hollister", "Santa Clara County", "San Benito County",
-    "South Bay", "East Bay", "Peninsula", "Monterey Bay Area",
+    "South Bay",
   ];
 
   // Center between Bay Area and Hollister, zoom 9 shows both clearly
@@ -1502,15 +1502,7 @@ function ContactSection() {
                   </div>
                 </div>
 
-                <a href="tel:831-320-8652" className="flex items-center gap-4 group">
-                  <div className="w-10 h-10 bg-[oklch(0.68_0.15_65/0.15)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.68_0.15_65)] transition-colors">
-                    <Music size={18} className="text-[oklch(0.55_0.12_55)] group-hover:text-[oklch(0.22_0.05_35)] transition-colors" />
-                  </div>
-                  <div>
-                    <p className="font-body text-xs text-[oklch(0.55_0.04_55)] uppercase tracking-wider">Phone</p>
-                    <p className="font-body text-[oklch(0.22_0.05_35)] font-semibold group-hover:text-[oklch(0.55_0.12_55)] transition-colors">831-320-8652</p>
-                  </div>
-                </a>
+
 
                 <a href="mailto:ronaldbu@icloud.com" className="flex items-center gap-4 group">
                   <div className="w-10 h-10 bg-[oklch(0.68_0.15_65/0.15)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.68_0.15_65)] transition-colors">
@@ -1633,6 +1625,12 @@ function ContactSection() {
                     placeholder="Tell us about your venue, expected attendance, duration, and any special requests..."
                     className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors resize-none"
                   />
+                </div>
+                <div className="bg-[oklch(0.97_0.015_75)] p-4 rounded-sm border border-[oklch(0.88_0.025_70)]">
+                  <p className="font-body text-xs text-[oklch(0.45_0.04_50)] mb-3">This site is protected by hCaptcha and its <a href="https://www.hcaptcha.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-[oklch(0.68_0.15_65)]">Privacy Policy</a> and <a href="https://www.hcaptcha.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-[oklch(0.68_0.15_65)]">Terms of Service</a> apply.</p>
+                  <div className="h-[78px] bg-[oklch(1_0.01_80)] rounded border border-[oklch(0.88_0.025_70)] flex items-center justify-center text-[oklch(0.45_0.04_50)] text-xs">
+                    hCaptcha Widget
+                  </div>
                 </div>
                 <motion.button
                   type="submit"
