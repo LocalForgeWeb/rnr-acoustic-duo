@@ -24,7 +24,7 @@ const IMAGES = {
   craveWine: "/manus-storage/IMG_6926_2afdcad9.JPG",
   twinOaks: "/manus-storage/IMG_6927_f6e6eecf.JPG",
   map: "/manus-storage/bay_area_map_b5d6e45e.jpg",
-  performance: "/manus-storage/acoustic_performance_a151795a.jpg",
+  performance: "/manus-storage/IMG_8782_028fdee9.JPG",
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
   flyer: "/manus-storage/177264864475032_0330e071.PNG",
