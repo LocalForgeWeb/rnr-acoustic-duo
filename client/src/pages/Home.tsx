@@ -568,6 +568,61 @@ function ServicesSection() {
   );
 }
 
+// ─── Testimonials Section ────────────────────────────────────
+function TestimonialsSection() {
+  const testimonials = [
+    {
+      quote: "Ron and Rebecca brought such warmth and authenticity to our venue. Their acoustic set perfectly complemented our wine experience, and our guests couldn't stop raving about them.",
+      author: "Crave Wine Co.",
+      location: "Hollister, CA",
+    },
+    {
+      quote: "The perfect blend of talent and professionalism. Their music elevated our event atmosphere, and they were an absolute pleasure to work with from start to finish.",
+      author: "P&V Winery",
+      location: "Morgan Hill, CA",
+    },
+  ];
+
+  return (
+    <section className="py-24 bg-[oklch(0.22_0.05_35)]">
+      <div className="container">
+        <FadeUp className="text-center mb-16">
+          <p className="section-label mb-3 text-[oklch(0.68_0.15_65)]">What Venues Say</p>
+          <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.97_0.015_75)] leading-tight">
+            Testimonials
+          </h2>
+          <div className="golden-divider max-w-[80px] mx-auto mt-6" />
+        </FadeUp>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {testimonials.map((testimonial, idx) => (
+            <FadeUp key={idx} delay={idx * 100}>
+              <div className="bg-[oklch(0.32_0.08_35)] p-8 rounded-sm border-l-4 border-[oklch(0.68_0.15_65)]">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={16} className="fill-[oklch(0.68_0.15_65)] text-[oklch(0.68_0.15_65)]" />
+                  ))}
+                </div>
+                <p className="font-body text-[oklch(0.85_0.02_75)] mb-6 italic leading-relaxed">
+                  "{testimonial.quote}"
+                </p>
+                <div>
+                  <p className="font-display text-[oklch(0.68_0.15_65)] font-semibold">
+                    {testimonial.author}
+                  </p>
+                  <p className="font-body text-xs text-[oklch(0.55_0.04_55)]">
+                    {testimonial.location}
+                  </p>
+                </div>
+              </div>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Flyer Section ────────────────────────────────────────────
 function FlyerSection() {
   return (
@@ -876,6 +931,7 @@ export default function Home() {
         <AboutSection />
         <ReelSection />
         <VenuesSection />
+        <TestimonialsSection />
         <CalendarSection />
         <ServicesSection />
         <FlyerSection />
