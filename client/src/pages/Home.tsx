@@ -591,7 +591,7 @@ function AboutSection() {
               </div>
               {/* Location badge */}
               <div className="absolute top-4 right-4 bg-[oklch(0.22_0.05_35/0.85)] backdrop-blur-sm px-3 py-2 rounded-sm">
-                <p className="font-script text-[oklch(0.68_0.15_65)] text-base leading-none">Bay Area, CA</p>
+                <p className="font-display text-[oklch(0.68_0.15_65)] text-base font-semibold leading-none">Bay Area, CA</p>
               </div>
             </div>
           </FadeUp>
