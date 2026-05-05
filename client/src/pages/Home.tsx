@@ -27,6 +27,7 @@ const IMAGES = {
   performance: "/manus-storage/acoustic_performance_a151795a.jpg",
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
+  flyer: "/manus-storage/177264864475032_0330e071.PNG",
 };
 
 // ─── Animated Section Wrapper ─────────────────────────────────
@@ -1402,151 +1403,33 @@ function TestimonialsSection() {
 
 // ─── Flyer Template Section ───────────────────────────────────
 function FlyerSection() {
-  const [selectedVenue, setSelectedVenue] = useState(VENUES[0]);
-  const [customDate, setCustomDate] = useState("Saturday, June 7, 2025");
-  const [customTime, setCustomTime] = useState("2:00 PM – 5:00 PM");
-  const [customNote, setCustomNote] = useState("Free to attend · All ages welcome");
 
   return (
-    <section id="flyer" className="py-24 bg-[oklch(0.97_0.015_75)]">
+    <section id="flyer" className="py-24 bg-[oklch(0.22_0.05_35)]">
       <div className="container">
-        <FadeUp className="text-center mb-16">
-          <p className="section-label mb-3">Promote Your Show</p>
-          <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.22_0.05_35)] leading-tight mb-4">
-            Gig Flyer Template
+        <FadeUp className="text-center mb-12">
+          <p className="section-label mb-3 text-[oklch(0.68_0.15_65)]">Upcoming Shows</p>
+          <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.96_0.025_75)] leading-tight mb-4">
+            Current Gig Flyer
           </h2>
-          <div className="golden-divider max-w-[80px] mx-auto mb-6" />
-          <p className="font-body text-[oklch(0.45_0.04_50)] text-lg max-w-2xl mx-auto">
-            Use this template to promote upcoming shows. Fill in the details, screenshot or print the preview, and share on social media or at your venue.
-          </p>
+          <div className="golden-divider max-w-[80px] mx-auto" />
         </FadeUp>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-5xl mx-auto">
-          {/* Controls */}
-          <FadeUp>
-            <div className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-7 space-y-5">
-              <h3 className="font-display text-xl text-[oklch(0.22_0.05_35)] mb-2">Customize Flyer</h3>
-              <div className="golden-divider mb-6" />
-
-              <div>
-                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Venue</label>
-                <select
-                  value={selectedVenue.name}
-                  onChange={(e) => setSelectedVenue(VENUES.find((v) => v.name === e.target.value) || VENUES[0])}
-                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
-                >
-                  {VENUES.map((v) => (
-                    <option key={v.name} value={v.name}>{v.name} — {v.location}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Date</label>
-                <input
-                  type="text"
-                  value={customDate}
-                  onChange={(e) => setCustomDate(e.target.value)}
-                  placeholder="e.g. Saturday, June 7, 2025"
-                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Time</label>
-                <input
-                  type="text"
-                  value={customTime}
-                  onChange={(e) => setCustomTime(e.target.value)}
-                  placeholder="e.g. 2:00 PM – 5:00 PM"
-                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
-                />
-              </div>
-
-              <div>
-                <label className="font-body text-xs text-[oklch(0.45_0.04_50)] uppercase tracking-wider block mb-2">Additional Note</label>
-                <input
-                  type="text"
-                  value={customNote}
-                  onChange={(e) => setCustomNote(e.target.value)}
-                  placeholder="e.g. Free to attend · All ages welcome"
-                  className="w-full border border-[oklch(0.88_0.025_70)] rounded-sm px-4 py-3 font-body text-sm text-[oklch(0.22_0.05_35)] bg-[oklch(0.97_0.015_75)] focus:outline-none focus:border-[oklch(0.68_0.15_65)] transition-colors"
-                />
-              </div>
-
-              <div className="pt-2">
-                <p className="font-body text-xs text-[oklch(0.55_0.04_55)] leading-relaxed bg-[oklch(0.93_0.02_75)] rounded-sm p-3">
-                  <strong className="text-[oklch(0.35_0.06_40)]">How to use:</strong> Customize the fields above, then take a screenshot of the flyer preview to share on Instagram, Facebook, or print for your venue. A print-ready PDF export can be added — just ask!
-                </p>
-              </div>
+        <FadeUp className="flex justify-center" delay={100}>
+          <div className="w-full max-w-2xl">
+            <div className="rounded-lg overflow-hidden shadow-2xl">
+              <img
+                src={IMAGES.flyer}
+                alt="R & R Acoustic Duo upcoming shows flyer"
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
             </div>
-          </FadeUp>
-
-          {/* Flyer Preview */}
-          <FadeUp delay={200}>
-            <div className="sticky top-24">
-              <p className="section-label mb-3 text-center">Preview</p>
-              {/* Flyer card */}
-              <div
-                id="flyer-preview"
-                className="relative overflow-hidden rounded-sm shadow-2xl"
-                style={{ aspectRatio: "4/5", background: "oklch(0.22 0.05 35)" }}
-              >
-                {/* Background venue image */}
-                <img
-                  src={selectedVenue.image}
-                  alt={selectedVenue.name}
-                  className="absolute inset-0 w-full h-full object-cover opacity-30"
-                />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.22_0.05_35/0.6)] via-[oklch(0.22_0.05_35/0.5)] to-[oklch(0.22_0.05_35/0.9)]" />
-
-                {/* Content */}
-                <div className="relative z-10 h-full flex flex-col items-center justify-between p-8 text-center">
-                  {/* Top */}
-                  <div>
-                    <p className="font-body text-[0.6rem] font-bold tracking-[0.3em] uppercase text-[oklch(0.68_0.15_65)] mb-3">
-                      Live Acoustic Music
-                    </p>
-                    <img src={IMAGES.logoLight} alt="R & R" className="h-16 w-auto mx-auto mb-3 drop-shadow-xl" />
-                    <p className="font-script text-[oklch(0.68_0.15_65)] text-2xl">Ron Butron & Rebecca Barnes</p>
-                  </div>
-
-                  {/* Middle */}
-                  <div>
-                    <div className="golden-divider max-w-[60px] mx-auto mb-5" />
-                    <p className="font-display text-3xl font-bold text-[oklch(0.96_0.025_75)] mb-1 leading-tight">
-                      {selectedVenue.name}
-                    </p>
-                    <p className="font-body text-sm text-[oklch(0.75_0.02_75)] flex items-center justify-center gap-1 mb-6">
-                      <MapPin size={12} /> {selectedVenue.location}
-                    </p>
-                    <div className="bg-[oklch(0.68_0.15_65)] px-6 py-3 rounded-sm inline-block mb-3">
-                      <p className="font-display text-lg font-bold text-[oklch(0.15_0.04_30)]">{customDate}</p>
-                    </div>
-                    <p className="font-body text-sm text-[oklch(0.88_0.025_75)] flex items-center justify-center gap-1.5">
-                      <Clock size={13} /> {customTime}
-                    </p>
-                  </div>
-
-                  {/* Bottom */}
-                  <div>
-                    <div className="golden-divider max-w-[60px] mx-auto mb-4" />
-                    <p className="font-body text-xs text-[oklch(0.75_0.02_75)] mb-2">{customNote}</p>
-                    <p className="font-body text-[0.6rem] text-[oklch(0.55_0.02_60)] uppercase tracking-widest">
-                      @rnr_music_duo
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <p className="font-body text-xs text-[oklch(0.55_0.04_55)] text-center mt-3 flex items-center justify-center gap-1.5">
-                <Download size={12} />
-                Screenshot or print this preview to share
-              </p>
-            </div>
-          </FadeUp>
-        </div>
+            <p className="font-body text-sm text-[oklch(0.75_0.02_75)] text-center mt-6">
+              Check back here for the latest show announcements and event details.
+            </p>
+          </div>
+        </FadeUp>
       </div>
     </section>
   );
