@@ -14,8 +14,8 @@ import { trpc } from "@/lib/trpc";
 
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
-  hero: "/manus-storage/C5D4D096-E8E3-4C44-A96A-965C24E643FB_0493c1fe.png",
-  heroMobile: "/manus-storage/hero_mobile_4ec86e03.png",
+  hero: "/manus-storage/C9D0952E-73C6-492F-8F99-6BCFF6780A75_9203ceba.png",
+  heroMobile: "/manus-storage/A112EB8C-5E6C-44BC-A207-3433FE3F2786_cb3b2fd0.png",
   logoLight: "/manus-storage/rnr_logo_light_9cbea23b.png",
   logoDark: "/manus-storage/rnr_logo_5be2a5ae.png",
   duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
@@ -81,6 +81,15 @@ const VENUES = [
     url: "https://www.twinoakshollister.com/",
     tag: "Retirement Community",
     coords: { lat: 36.8650, lng: -121.3950 },
+  },
+  {
+    name: "Indigo Program",
+    location: "San Jose, CA",
+    description: "A vibrant community program in San Jose offering cultural events and live entertainment for diverse audiences in a welcoming, inclusive space.",
+    image: IMAGES.twinOaks,
+    url: "https://www.sanjoseca.gov/",
+    tag: "Community Program",
+    coords: { lat: 37.3382, lng: -121.8863 },
   },
 ];
 
@@ -617,7 +626,7 @@ function AboutSection() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mb-8 py-6 border-y border-[oklch(0.88_0.025_70)]">
               {[
-                { num: "4+", label: "Resident Venues" },
+                { num: "5+", label: "Resident Venues" },
                 { num: "Bay Area", label: "Service Region" },
                 { num: "All Ages", label: "Audiences" },
               ].map((stat) => (
@@ -735,7 +744,7 @@ function VenuesSection() {
                 <img
                   src={venue.image}
                   alt={`${venue.name} — ${venue.location} live music venue`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover" style={{ filter: 'sepia(0.25) saturate(1.1) brightness(0.95)' }}
                   loading="lazy"
                 />
                 <div className="venue-overlay" />
@@ -1577,7 +1586,7 @@ function ContactSection() {
                   Let's Make Music Happen
                 </h3>
                 <p className="font-body text-[oklch(0.45_0.04_50)] leading-relaxed">
-                  Whether you're a winery looking for weekend entertainment, a restaurant wanting to elevate the dining experience, or planning a private event — Ron and Rebecca are here to make it memorable.
+                  Whether you're a winery looking for weekend entertainment, a restaurant wanting to elevate the dining experience, or planning a private event — Ron & Rebecca are here to make it memorable.
                 </p>
               </div>
 
@@ -1606,6 +1615,26 @@ function ContactSection() {
                     <p className="font-body text-[oklch(0.22_0.05_35)] font-semibold">San Francisco Bay Area, CA</p>
                   </div>
                 </div>
+
+                <a href="tel:831-320-8652" className="flex items-center gap-4 group">
+                  <div className="w-10 h-10 bg-[oklch(0.68_0.15_65/0.15)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.68_0.15_65)] transition-colors">
+                    <Music size={18} className="text-[oklch(0.55_0.12_55)] group-hover:text-[oklch(0.22_0.05_35)] transition-colors" />
+                  </div>
+                  <div>
+                    <p className="font-body text-xs text-[oklch(0.55_0.04_55)] uppercase tracking-wider">Phone</p>
+                    <p className="font-body text-[oklch(0.22_0.05_35)] font-semibold group-hover:text-[oklch(0.55_0.12_55)] transition-colors">831-320-8652</p>
+                  </div>
+                </a>
+
+                <a href="mailto:ronaldbu@icloud.com" className="flex items-center gap-4 group">
+                  <div className="w-10 h-10 bg-[oklch(0.68_0.15_65/0.15)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.68_0.15_65)] transition-colors">
+                    <Mail size={18} className="text-[oklch(0.55_0.12_55)] group-hover:text-[oklch(0.22_0.05_35)] transition-colors" />
+                  </div>
+                  <div>
+                    <p className="font-body text-xs text-[oklch(0.55_0.04_55)] uppercase tracking-wider">Email</p>
+                    <p className="font-body text-[oklch(0.22_0.05_35)] font-semibold group-hover:text-[oklch(0.55_0.12_55)] transition-colors">ronaldbu@icloud.com</p>
+                  </div>
+                </a>
               </div>
 
               {/* Members quick info — Ron first */}
@@ -1649,7 +1678,7 @@ function ContactSection() {
                 </div>
                 <h3 className="font-display text-2xl text-[oklch(0.22_0.05_35)] mb-3">Message Received!</h3>
                 <p className="font-body text-[oklch(0.45_0.04_50)] leading-relaxed mb-6">
-                  Thank you for reaching out. Ron and Rebecca will be in touch soon to discuss your event and availability.
+                  Thank you for reaching out. Ron & Rebecca will be in touch soon to discuss your event and availability.
                 </p>
                 <button onClick={() => setSubmitted(false)} className="btn-amber">
                   Send Another Message
@@ -1761,7 +1790,6 @@ function Footer() {
                 { label: "Upcoming Shows", href: "#calendar" },
                 { label: "Services", href: "#services" },
                 { label: "Coverage Area", href: "#coverage" },
-                { label: "Gig Flyer", href: "#flyer" },
                 { label: "Book Us", href: "#contact" },
               ].map((link) => (
                 <button
@@ -1834,7 +1862,6 @@ export default function Home() {
       <ServicesSection />
       <CoverageSection />
       <TestimonialsSection />
-      <FlyerSection />
       <ContactSection />
       <Footer />
     </div>
