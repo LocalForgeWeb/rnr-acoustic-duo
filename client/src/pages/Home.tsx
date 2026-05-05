@@ -707,7 +707,7 @@ function ReelSection() {
               height="600"
               frameBorder="0"
               scrolling="no"
-              allowTransparency
+              allow="encrypted-media"
               className="rounded-none"
             />
           </div>
