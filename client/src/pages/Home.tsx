@@ -26,6 +26,7 @@ const IMAGES = {
   map: "/manus-storage/bay_area_map_b5d6e45e.jpg",
   performance: "/manus-storage/IMG_8782_028fdee9.JPG",
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
+  indigoProgram: "/manus-storage/IMG_6969_4af8c8a2.PNG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
   flyer: "/manus-storage/177264864475032_0330e071.PNG",
 };
@@ -89,7 +90,7 @@ const VENUES = [
     name: "Indigo Program K-8",
     location: "San Jose, CA",
     description: "Indigo Program K-8 public school in San Jose, where R & R brings live music to students and families for educational and cultural events.",
-    image: IMAGES.harvestFestival,
+    image: IMAGES.indigoProgram,
     url: "https://www.sanjoseusd.org/",
     tag: "Public School",
     coords: { lat: 37.3382, lng: -121.8863 },
