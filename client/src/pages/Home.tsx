@@ -14,8 +14,8 @@ import { trpc } from "@/lib/trpc";
 
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
-  hero: "/manus-storage/C9D0952E-73C6-492F-8F99-6BCFF6780A75_9203ceba.png",
-  heroMobile: "/manus-storage/A112EB8C-5E6C-44BC-A207-3433FE3F2786_cb3b2fd0.png",
+  hero: "/manus-storage/C5D4D096-E8E3-4C44-A96A-965C24E643FB_0493c1fe.png",
+  heroMobile: "/manus-storage/hero_mobile_4ec86e03.png",
   logoLight: "/manus-storage/rnr_logo_light_9cbea23b.png",
   logoDark: "/manus-storage/rnr_logo_5be2a5ae.png",
   duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
@@ -25,6 +25,8 @@ const IMAGES = {
   twinOaks: "/manus-storage/IMG_6927_f6e6eecf.JPG",
   map: "/manus-storage/bay_area_map_b5d6e45e.jpg",
   performance: "/manus-storage/acoustic_performance_a151795a.jpg",
+  guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
+  harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
 };
 
 // ─── Animated Section Wrapper ─────────────────────────────────
@@ -83,12 +85,12 @@ const VENUES = [
     coords: { lat: 36.8650, lng: -121.3950 },
   },
   {
-    name: "Indigo Program",
+    name: "Indigo Program K-8",
     location: "San Jose, CA",
-    description: "A vibrant community program in San Jose offering cultural events and live entertainment for diverse audiences in a welcoming, inclusive space.",
-    image: IMAGES.twinOaks,
-    url: "https://www.sanjoseca.gov/",
-    tag: "Community Program",
+    description: "Indigo Program K-8 public school in San Jose, where R & R brings live music to students and families for educational and cultural events.",
+    image: IMAGES.harvestFestival,
+    url: "https://www.sanjoseusd.org/",
+    tag: "Public School",
     coords: { lat: 37.3382, lng: -121.8863 },
   },
 ];
