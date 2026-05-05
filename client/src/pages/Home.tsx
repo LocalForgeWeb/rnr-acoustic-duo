@@ -701,15 +701,13 @@ function ReelSection() {
 
         <FadeUp className="flex justify-center">
           <div className="w-full max-w-md border-4 border-[oklch(0.68_0.15_65)] rounded-sm shadow-2xl overflow-hidden bg-[oklch(0.97_0.015_75)]">
-            <iframe
-              src="https://www.instagram.com/reel/DX8FqtmOov-/embed/captioned/"
-              width="100%"
-              height="600"
-              frameBorder="0"
-              scrolling="no"
-              allow="encrypted-media"
-              className="rounded-none"
-            />
+            <a href="https://www.instagram.com/reel/DX8FqtmOov-/" target="_blank" rel="noopener noreferrer" className="block w-full h-96 bg-[oklch(0.97_0.015_75)] flex items-center justify-center text-center p-6">
+              <div>
+                <p className="font-body text-[oklch(0.45_0.04_50)] mb-3">Watch on Instagram</p>
+                <p className="font-display text-2xl text-[oklch(0.68_0.15_65)] mb-4">R & R Live Performance</p>
+                <p className="font-body text-sm text-[oklch(0.55_0.04_55)]">Click to view the full video on Instagram</p>
+              </div>
+            </a>
           </div>
         </FadeUp>
       </div>
