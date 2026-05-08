@@ -158,7 +158,7 @@ function HeroSection() {
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="mb-6"
         >
-          <img src={IMAGES.logoDark} alt="R & R" className="h-16 w-auto mx-auto mb-6 drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 16px oklch(0.72 0.18 60 / 0.9)) brightness(1.15) saturate(1.3)' }} />
+          <img src={IMAGES.logoDark} alt="R & R" className="h-16 w-auto mx-auto mb-6 drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 20px oklch(0.75 0.22 50 / 1)) brightness(1.3) saturate(1.5) hue-rotate(-5deg)' }} />
           <p className="font-script text-[oklch(0.68_0.15_65)] text-2xl md:text-3xl mb-2 italic">
             Bay Area Live Music
           </p>
@@ -448,7 +448,7 @@ function CalendarSection() {
         {/* Booking CTA */}
         <FadeUp className="mt-12 text-center">
           <div className="bg-[oklch(0.22_0.05_35)] rounded-sm p-8 max-w-2xl mx-auto">
-            <img src={IMAGES.logoLight} alt="R & R" className="h-10 w-auto mb-4 mx-auto" style={{ filter: 'drop-shadow(0 0 12px oklch(0.72 0.18 60 / 0.95)) brightness(1.2) saturate(1.3)' }} />
+            <img src={IMAGES.logoLight} alt="R & R" className="h-10 w-auto mb-4 mx-auto" style={{ filter: 'drop-shadow(0 0 16px oklch(0.75 0.22 50 / 1)) brightness(1.3) saturate(1.5) hue-rotate(-5deg)' }} />
             <h3 className="font-display text-2xl text-[oklch(0.96_0.025_75)] mb-3">
               Want R & R at Your Venue?
             </h3>
@@ -857,7 +857,7 @@ export default function Home() {
       <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 bg-[oklch(0.22_0.05_35/0.95)] backdrop-blur-sm border-b border-[oklch(0.68_0.15_65/0.2)]">
         <div className="container flex items-center justify-between h-16">
           <a href="#" className="flex items-center gap-2">
-            <img src={IMAGES.logoDark} alt="R & R" className="h-8 w-auto" style={{ filter: 'drop-shadow(0 0 8px oklch(0.72 0.18 60 / 0.9)) brightness(1.15) saturate(1.3)' }} />
+            <img src={IMAGES.logoDark} alt="R & R" className="h-8 w-auto" style={{ filter: 'drop-shadow(0 0 12px oklch(0.75 0.22 50 / 1)) brightness(1.3) saturate(1.5) hue-rotate(-5deg)' }} />
           </a>
 
           {/* Desktop nav */}
