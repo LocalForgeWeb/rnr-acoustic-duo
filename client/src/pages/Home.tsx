@@ -28,7 +28,7 @@ const IMAGES = {
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
   indigoProgram: "/manus-storage/IMG_6969_4af8c8a2.PNG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
-  flyer: "/manus-storage/177264864475032_0330e071.PNG",
+  flyer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663522049608/4CERCH953YEJrX9ZU5kAKT/rnr_may_16_17_flyer-Se3qTnMDCv93X327LD8NuM.webp",
 };
 
 // ─── Animated Section Wrapper ─────────────────────────────────
@@ -158,7 +158,7 @@ function HeroSection() {
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="mb-6"
         >
-          <img src={IMAGES.logoDark} alt="R & R" className="h-16 w-auto mx-auto mb-6" />
+          <img src={IMAGES.logoDark} alt="R & R" className="h-16 w-auto mx-auto mb-6 drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 8px oklch(0.68 0.15 65 / 0.6))' }} />
           <p className="font-script text-[oklch(0.68_0.15_65)] text-2xl md:text-3xl mb-2 italic">
             Bay Area Live Music
           </p>
@@ -448,7 +448,7 @@ function CalendarSection() {
         {/* Booking CTA */}
         <FadeUp className="mt-12 text-center">
           <div className="bg-[oklch(0.22_0.05_35)] rounded-sm p-8 max-w-2xl mx-auto">
-            <img src={IMAGES.logoLight} alt="R & R" className="h-10 w-auto mb-4 mx-auto" />
+            <img src={IMAGES.logoLight} alt="R & R" className="h-10 w-auto mb-4 mx-auto" style={{ filter: 'drop-shadow(0 0 6px oklch(0.68 0.15 65 / 0.8))' }} />
             <h3 className="font-display text-2xl text-[oklch(0.96_0.025_75)] mb-3">
               Want R & R at Your Venue?
             </h3>
@@ -857,7 +857,7 @@ export default function Home() {
       <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 bg-[oklch(0.22_0.05_35/0.95)] backdrop-blur-sm border-b border-[oklch(0.68_0.15_65/0.2)]">
         <div className="container flex items-center justify-between h-16">
           <a href="#" className="flex items-center gap-2">
-            <img src={IMAGES.logoDark} alt="R & R" className="h-8 w-auto" />
+            <img src={IMAGES.logoDark} alt="R & R" className="h-8 w-auto" style={{ filter: 'drop-shadow(0 0 4px oklch(0.68 0.15 65 / 0.7))' }} />
           </a>
 
           {/* Desktop nav */}
