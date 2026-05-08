@@ -16,8 +16,8 @@ import { trpc } from "@/lib/trpc";
 const IMAGES = {
   hero: "/manus-storage/C5D4D096-E8E3-4C44-A96A-965C24E643FB_0493c1fe.png",
   heroMobile: "/manus-storage/hero_mobile_4ec86e03.png",
-  logoLight: "/manus-storage/rnr_logo_light_9cbea23b.png",
-  logoDark: "/manus-storage/rnr_logo_5be2a5ae.png",
+  logoLight: "/manus-storage/rnr-logo-light-yellow_6503b9de.png",
+  logoDark: "/manus-storage/rnr-logo-light-yellow_6503b9de.png",
   duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
   pandv: "/manus-storage/IMG_6942_3ffdc999.JPG",
   vinesAndPints: "/manus-storage/IMG_6925_cd3cc598.PNG",
@@ -158,7 +158,7 @@ function HeroSection() {
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="mb-6"
         >
-          <img src={IMAGES.logoDark} alt="R & R" className="h-16 w-auto mx-auto mb-6 drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 20px oklch(0.75 0.22 50 / 1)) brightness(1.3) saturate(1.5) hue-rotate(-5deg)' }} />
+          <img src={IMAGES.logoDark} alt="R & R" className="h-16 w-auto mx-auto mb-6 drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 12px oklch(0.85 0.18 65 / 0.8)) brightness(1.1) saturate(1.2)' }} />
           <p className="font-script text-[oklch(0.68_0.15_65)] text-2xl md:text-3xl mb-2 italic">
             Bay Area Live Music
           </p>
@@ -857,7 +857,7 @@ export default function Home() {
       <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 bg-[oklch(0.22_0.05_35/0.95)] backdrop-blur-sm border-b border-[oklch(0.68_0.15_65/0.2)]">
         <div className="container flex items-center justify-between h-16">
           <a href="#" className="flex items-center gap-2">
-            <img src={IMAGES.logoDark} alt="R & R" className="h-8 w-auto" style={{ filter: 'drop-shadow(0 0 12px oklch(0.75 0.22 50 / 1)) brightness(1.3) saturate(1.5) hue-rotate(-5deg)' }} />
+            <img src={IMAGES.logoDark} alt="R & R" className="h-8 w-auto" style={{ filter: 'drop-shadow(0 0 8px oklch(0.85 0.18 65 / 0.6)) brightness(1.05) saturate(1.1)' }} />
           </a>
 
           {/* Desktop nav */}
