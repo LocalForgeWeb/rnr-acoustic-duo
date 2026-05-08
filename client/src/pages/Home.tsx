@@ -16,8 +16,8 @@ import { trpc } from "@/lib/trpc";
 const IMAGES = {
   hero: "/manus-storage/C5D4D096-E8E3-4C44-A96A-965C24E643FB_0493c1fe.png",
   heroMobile: "/manus-storage/hero_mobile_4ec86e03.png",
-  logoLight: "/manus-storage/rnr-logo-light-yellow-correct_a2c5eb42.png",
-  logoDark: "/manus-storage/rnr-logo-light-yellow-correct_a2c5eb42.png",
+  logoLight: "/manus-storage/rnr-logo-light-yellow-correct_6223c147.png",
+  logoDark: "/manus-storage/rnr-logo-light-yellow-correct_6223c147.png",
   duoPhoto: "/manus-storage/A0BEAFAF-F3BC-4C21-A12A-FA6A984F6A96_534bfe0c.png",
   pandv: "/manus-storage/IMG_6942_3ffdc999.JPG",
   vinesAndPints: "/manus-storage/IMG_6925_cd3cc598.PNG",
