@@ -406,7 +406,7 @@ function CalendarSection() {
           </h2>
           <div className="golden-divider max-w-[80px] mx-auto mb-6" />
           <p className="font-body text-[oklch(0.45_0.04_50)] text-lg max-w-2xl mx-auto leading-relaxed">
-            Here's our next few events if you can pop them in, please:
+            Join us for intimate acoustic performances at premier Bay Area venues.
           </p>
         </FadeUp>
 
