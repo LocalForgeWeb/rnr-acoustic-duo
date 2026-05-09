@@ -707,10 +707,10 @@ function ContactSection() {
                 <div>
                   <p className="font-body text-sm text-[oklch(0.55_0.04_55)] mb-1">Email</p>
                   <a
-                    href="mailto:ronaldbu@icloud.com"
+                    href="mailto:rnr_music_duo@icloud.com"
                     className="font-display text-lg text-[oklch(0.22_0.05_35)] hover:text-[oklch(0.68_0.15_65)] transition-colors"
                   >
-                    ronaldbu@icloud.com
+                    rnr_music_duo@icloud.com
                   </a>
                 </div>
               </div>
