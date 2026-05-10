@@ -5,3 +5,4 @@
 - [x] Update contact email to rnr_music_duo@icloud.com
 - [x] Update upcoming performances text to be more professional
 - [x] Fix booking form to actually send email notifications when submitted
+- [ ] Set up hCaptcha on booking form (frontend widget + server-side verification)

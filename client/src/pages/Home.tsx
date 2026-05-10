@@ -834,7 +834,7 @@ function ContactSection() {
                     Thank you! Your booking request has been sent.
                   </p>
                   <p className="font-body text-sm text-[oklch(0.55_0.04_55)] mt-1">
-                    Ron & Rebecca will be in touch soon at {submittedEmail || "your email"}.
+                    Ron & Rebecca will be in touch soon.
                   </p>
                   <button
                     type="button"
