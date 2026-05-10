@@ -659,6 +659,20 @@ function ContactSection() {
     date: "",
     message: "",
   });
+  const [submitted, setSubmitted] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState("");
+  const [submitError, setSubmitError] = useState("");
+
+  const submitBooking = trpc.booking.submit.useMutation({
+    onSuccess: () => {
+      setSubmittedEmail(formData.email);
+      setSubmitted(true);
+      setFormData({ name: "", email: "", venue: "", date: "", message: "" });
+    },
+    onError: (err) => {
+      setSubmitError(err.message || "Something went wrong. Please try again or email us directly at rnr_music_duo@icloud.com.");
+    },
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -669,8 +683,8 @@ function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission logic here
-    console.log("Form submitted:", formData);
+    setSubmitError("");
+    submitBooking.mutate(formData);
   };
 
   return (
@@ -810,13 +824,36 @@ function ContactSection() {
                 />
               </div>
 
-              <button
-                type="submit"
-                className="btn-amber w-full justify-center"
-              >
-                <Music size={15} />
-                Send Booking Request
-              </button>
+              {submitError && (
+                <p className="text-red-600 text-sm font-body">{submitError}</p>
+              )}
+
+              {submitted ? (
+                <div className="text-center py-4">
+                  <p className="font-display text-lg text-[oklch(0.45_0.15_140)]">
+                    Thank you! Your booking request has been sent.
+                  </p>
+                  <p className="font-body text-sm text-[oklch(0.55_0.04_55)] mt-1">
+                    Ron & Rebecca will be in touch soon at {submittedEmail || "your email"}.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSubmitted(false)}
+                    className="mt-4 text-sm text-[oklch(0.68_0.15_65)] underline font-body"
+                  >
+                    Send another request
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={submitBooking.isPending}
+                  className="btn-amber w-full justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  <Music size={15} />
+                  {submitBooking.isPending ? "Sending..." : "Send Booking Request"}
+                </button>
+              )}
             </form>
           </FadeUp>
         </div>
