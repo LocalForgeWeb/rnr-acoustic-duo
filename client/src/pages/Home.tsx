@@ -56,6 +56,7 @@ const SHOWS = [
     venue: "Crave Wine Co.",
     location: "Hollister",
     time: "5 to 8 PM",
+    website: "https://www.cravewineco.com",
   },
   {
     id: "2",
@@ -405,15 +406,8 @@ function CalendarSection() {
 
         <FadeUp className="max-w-3xl mx-auto">
           <div className="space-y-3">
-            {SHOWS.map((show) => (
-              <motion.div
-                key={show.id}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5 }}
-                className="bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 hover:shadow-lg transition-shadow"
-              >
+            {SHOWS.map((show) => {
+              const cardContent = (
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
                     <h3 className="font-display text-lg text-[oklch(0.22_0.05_35)] mb-1">
@@ -433,8 +427,24 @@ function CalendarSection() {
                     </span>
                   </div>
                 </div>
-              </motion.div>
-            ))}
+              );
+              return (
+                <motion.div
+                  key={show.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ duration: 0.5 }}
+                  className={`bg-[oklch(1_0.01_80)] border border-[oklch(0.88_0.025_70)] rounded-sm p-5 hover:shadow-lg transition-shadow${'website' in show && show.website ? ' cursor-pointer hover:border-[oklch(0.68_0.15_65)]' : ''}`}
+                >
+                  {'website' in show && show.website ? (
+                    <a href={show.website} target="_blank" rel="noopener noreferrer" className="block no-underline">
+                      {cardContent}
+                    </a>
+                  ) : cardContent}
+                </motion.div>
+              );
+            })}
           </div>
         </FadeUp>
 
