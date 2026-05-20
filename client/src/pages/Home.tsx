@@ -28,7 +28,7 @@ const IMAGES = {
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
   indigoProgram: "/manus-storage/IMG_6969_4af8c8a2.PNG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
-  flyer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663522049608/4CERCH953YEJrX9ZU5kAKT/rnr-flyer-may-16-17-Z5ric6jjynYUagQhaRRp42.webp",
+  flyer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663522049608/4CERCH953YEJrX9ZU5kAKT/rnr-flyer-may30-crave-UBBpRMRLRFANydME7xznrw.webp",
 };
 
 // ─── Animated Section Wrapper ─────────────────────────────────
@@ -52,41 +52,34 @@ function FadeUp({ children, className = "", delay = 0 }: {
 const SHOWS = [
   {
     id: "1",
-    date: "Saturday, May 16",
-    venue: "The Hideaway",
-    location: "San Juan Bautista",
-    time: "6 PM",
+    date: "Saturday, May 30",
+    venue: "Crave Wine Co.",
+    location: "Hollister",
+    time: "5 to 8 PM",
   },
   {
     id: "2",
-    date: "Sunday, May 17",
-    venue: "Crave Wine Co.",
-    location: "Hollister",
-    time: "3 to 6 PM",
-  },
-  {
-    id: "3",
     date: "Sunday, June 7",
     venue: "P&V Winery",
     location: "Morgan Hill",
     time: "1 to 4 PM",
   },
   {
-    id: "4",
+    id: "3",
     date: "Friday, June 12",
     venue: "Private Event",
     location: "San Jose",
     time: "TBD",
   },
   {
-    id: "5",
+    id: "4",
     date: "Saturday, June 13",
     venue: "The Hideaway",
     location: "San Juan Bautista",
     time: "6 PM",
   },
   {
-    id: "6",
+    id: "5",
     date: "Sunday, June 14",
     venue: "Twin Oaks",
     location: "Hollister",
