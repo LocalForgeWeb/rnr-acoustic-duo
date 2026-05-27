@@ -74,13 +74,6 @@ const SHOWS = [
   },
   {
     id: "4",
-    date: "Saturday, June 13",
-    venue: "The Hideaway",
-    location: "San Juan Bautista",
-    time: "6 PM",
-  },
-  {
-    id: "5",
     date: "Sunday, June 14",
     venue: "Twin Oaks",
     location: "Hollister",
