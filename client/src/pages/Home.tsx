@@ -28,7 +28,7 @@ const IMAGES = {
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
   indigoProgram: "/manus-storage/IMG_6969_4af8c8a2.PNG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
-  flyer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663522049608/4CERCH953YEJrX9ZU5kAKT/rnr-flyer-may30-crave-UBBpRMRLRFANydME7xznrw.webp",
+  flyer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663522049608/4CERCH953YEJrX9ZU5kAKT/rnr-flyer-pv-winery-june7-C7sdAmhtJhYir4p8op4xP6.webp",
 };
 
 // ─── Animated Section Wrapper ─────────────────────────────────
