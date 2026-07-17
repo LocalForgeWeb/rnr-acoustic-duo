@@ -28,7 +28,7 @@ const IMAGES = {
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
   indigoProgram: "/manus-storage/IMG_6969_4af8c8a2.PNG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
-  flyer: "/manus-storage/rnr-flyer-pv-winery-june7-v2_0bad129e.png",
+  flyer: "/manus-storage/rnr-performance-dates-flyer_4cd8c3e4.png",
 };
 
 // ─── Animated Section Wrapper ─────────────────────────────────
@@ -52,7 +52,7 @@ function FadeUp({ children, className = "", delay = 0 }: {
 const SHOWS = [
   {
     id: "1",
-    date: "Saturday, August 2",
+    date: "Sunday, August 2",
     venue: "P&V Winery",
     location: "Morgan Hill, CA",
     time: "1 to 4 PM",
@@ -60,28 +60,28 @@ const SHOWS = [
   },
   {
     id: "2",
-    date: "Friday, August 8",
+    date: "Saturday, August 8",
     venue: "Vines and Pints",
     location: "Gilroy, CA",
     time: "7 to 10 PM",
   },
   {
     id: "3",
-    date: "Saturday, August 9",
+    date: "Sunday, August 9",
     venue: "Solis Winery",
     location: "Gilroy, CA",
     time: "1 to 4 PM",
   },
   {
     id: "4",
-    date: "Thursday, September 4",
+    date: "Friday, September 4",
     venue: "Solis Winery",
     location: "Gilroy, CA",
     time: "5:30 to 8:30 PM",
   },
   {
     id: "5",
-    date: "Saturday, September 6",
+    date: "Sunday, September 6",
     venue: "P&V Winery",
     location: "Morgan Hill, CA",
     time: "1 to 4 PM",
@@ -89,14 +89,14 @@ const SHOWS = [
   },
   {
     id: "6",
-    date: "Friday, September 12",
+    date: "Saturday, September 12",
     venue: "The Hideaway",
     location: "San Juan Bautista, CA",
     time: "6 to 9 PM",
   },
   {
     id: "7",
-    date: "Saturday, September 27",
+    date: "Sunday, September 27",
     venue: "Solis Winery",
     location: "Gilroy, CA",
     time: "1 to 4 PM",
