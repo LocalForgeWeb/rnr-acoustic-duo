@@ -9,3 +9,4 @@
 - [x] Remove May 16 (The Hideaway) and May 17 (Crave Wine Co) past gigs from website
 - [x] Add new gig: Crave Wine Co, Saturday May 30, 5-8 PM
 - [x] Generate new flyer for May 30 Crave Wine Co show
+- [ ] Export the current R&R Acoustic Duo website to a new private GitHub repository
