@@ -10,4 +10,4 @@
 - [x] Add new gig: Crave Wine Co, Saturday May 30, 5-8 PM
 - [x] Generate new flyer for May 30 Crave Wine Co show
 - [x] Export the current R&R Acoustic Duo website to a new private GitHub repository
-- [ ] Prepare a Cloudflare Pages-compatible deployment configuration and guide
+- [x] Prepare a Cloudflare Pages-compatible deployment configuration and guide

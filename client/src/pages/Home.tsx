@@ -10,7 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import { Instagram, Mail, MapPin, Music, ChevronDown, Menu, X, Star, ExternalLink, ChevronRight, Mic2, Guitar, Calendar, Clock, Download, RefreshCw, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapView } from "@/components/Map";
-import { trpc } from "@/lib/trpc";
 
 // ─── Image URLs ───────────────────────────────────────────────
 const IMAGES = {
@@ -678,19 +677,6 @@ function ContactSection() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const [submittedEmail, setSubmittedEmail] = useState("");
-  const [submitError, setSubmitError] = useState("");
-
-  const submitBooking = trpc.booking.submit.useMutation({
-    onSuccess: () => {
-      setSubmittedEmail(formData.email);
-      setSubmitted(true);
-      setFormData({ name: "", email: "", venue: "", date: "", message: "" });
-    },
-    onError: (err) => {
-      setSubmitError(err.message || "Something went wrong. Please try again or email us directly at rnr_music_duo@icloud.com.");
-    },
-  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -701,8 +687,20 @@ function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitError("");
-    submitBooking.mutate(formData);
+    const subject = `Booking request from ${formData.name}`;
+    const body = [
+      `Name: ${formData.name}`,
+      `Email: ${formData.email}`,
+      `Venue / Event: ${formData.venue}`,
+      `Preferred Date: ${formData.date}`,
+      "",
+      "Message:",
+      formData.message || "(No additional message)",
+    ].join("\n");
+
+    window.location.href = `mailto:rnr_music_duo@icloud.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSubmitted(true);
+    setFormData({ name: "", email: "", venue: "", date: "", message: "" });
   };
 
   return (
@@ -842,17 +840,13 @@ function ContactSection() {
                 />
               </div>
 
-              {submitError && (
-                <p className="text-red-600 text-sm font-body">{submitError}</p>
-              )}
-
               {submitted ? (
                 <div className="text-center py-4">
                   <p className="font-display text-lg text-[oklch(0.45_0.15_140)]">
-                    Thank you! Your booking request has been sent.
+                    Your booking email is ready to send.
                   </p>
                   <p className="font-body text-sm text-[oklch(0.55_0.04_55)] mt-1">
-                    Ron & Rebecca will be in touch soon.
+                    Review it in your email app, then send it to Ron & Rebecca.
                   </p>
                   <button
                     type="button"
@@ -865,11 +859,10 @@ function ContactSection() {
               ) : (
                 <button
                   type="submit"
-                  disabled={submitBooking.isPending}
-                  className="btn-amber w-full justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="btn-amber w-full justify-center"
                 >
                   <Music size={15} />
-                  {submitBooking.isPending ? "Sending..." : "Send Booking Request"}
+                  Open Booking Email
                 </button>
               )}
             </form>

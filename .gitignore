@@ -4,6 +4,7 @@
 
 # Build outputs
 dist/
+cloudflare-dist/
 build/
 *.dist
 
