@@ -28,7 +28,6 @@ const IMAGES = {
   guitarClose: "/manus-storage/IMG_8782_3b7ea25b.JPG",
   indigoProgram: "/manus-storage/IMG_6969_4af8c8a2.PNG",
   harvestFestival: "/manus-storage/IMG_6964_c58d397c.PNG",
-  flyer: "/manus-storage/rnr-performance-dates-flyer_4cd8c3e4.png",
 };
 
 // ─── Animated Section Wrapper ─────────────────────────────────
@@ -52,6 +51,7 @@ function FadeUp({ children, className = "", delay = 0 }: {
 const SHOWS = [
   {
     id: "1",
+    eventDate: "2026-08-02",
     date: "Sunday, August 2",
     venue: "P&V Winery",
     location: "Morgan Hill, CA",
@@ -60,6 +60,7 @@ const SHOWS = [
   },
   {
     id: "2",
+    eventDate: "2026-08-08",
     date: "Saturday, August 8",
     venue: "Vines and Pints",
     location: "Gilroy, CA",
@@ -67,6 +68,7 @@ const SHOWS = [
   },
   {
     id: "3",
+    eventDate: "2026-08-09",
     date: "Sunday, August 9",
     venue: "Solis Winery",
     location: "Gilroy, CA",
@@ -74,6 +76,7 @@ const SHOWS = [
   },
   {
     id: "4",
+    eventDate: "2026-09-04",
     date: "Friday, September 4",
     venue: "Solis Winery",
     location: "Gilroy, CA",
@@ -81,6 +84,7 @@ const SHOWS = [
   },
   {
     id: "5",
+    eventDate: "2026-09-06",
     date: "Sunday, September 6",
     venue: "P&V Winery",
     location: "Morgan Hill, CA",
@@ -89,6 +93,7 @@ const SHOWS = [
   },
   {
     id: "6",
+    eventDate: "2026-09-12",
     date: "Saturday, September 12",
     venue: "The Hideaway",
     location: "San Juan Bautista, CA",
@@ -96,6 +101,7 @@ const SHOWS = [
   },
   {
     id: "7",
+    eventDate: "2026-09-27",
     date: "Sunday, September 27",
     venue: "Solis Winery",
     location: "Gilroy, CA",
@@ -154,6 +160,8 @@ function HeroSection() {
             src={IMAGES.hero}
             alt="R & R Acoustic Duo performing"
             className="w-full h-full object-cover"
+            fetchPriority="high"
+            decoding="async"
           />
         </picture>
         <div className="absolute inset-0 bg-[oklch(0.22_0.05_35/0.45)]" />
@@ -239,6 +247,8 @@ function AboutSection() {
                 src={IMAGES.duoPhoto}
                 alt="Ron & Rebecca performing"
                 className="w-full rounded-sm shadow-2xl"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute -top-4 -right-4 w-full h-full border-4 border-[oklch(0.68_0.15_65)] rounded-sm pointer-events-none" />
             </div>
@@ -327,6 +337,7 @@ function ReelSection() {
               width="100%"
               height="auto"
               controls
+              preload="metadata"
               className="w-full bg-[oklch(0.22_0.05_35)]"
               poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'%3E%3Crect fill='%23222' width='1200' height='675'/%3E%3C/svg%3E"
             >
@@ -370,6 +381,8 @@ function VenuesSection() {
                     src={venue.image}
                     alt={venue.name}
                     className="w-full h-full object-cover venue-card-image"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
 
@@ -405,6 +418,17 @@ function VenuesSection() {
 
 // ─── Calendar Section (Static Shows) ───────────────────────────
 function CalendarSection() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const getPart = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+  const todayInPacificTime = `${getPart("year")}-${getPart("month")}-${getPart("day")}`;
+  const upcomingShows = SHOWS.filter((show) => show.eventDate >= todayInPacificTime);
+
   return (
     <section id="calendar" className="py-24 bg-[oklch(0.93_0.02_75)]">
       <div className="container">
@@ -421,7 +445,7 @@ function CalendarSection() {
 
         <FadeUp className="max-w-3xl mx-auto">
           <div className="space-y-3">
-            {SHOWS.map((show) => {
+            {upcomingShows.map((show) => {
               const cardContent = (
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
@@ -578,6 +602,8 @@ function ServicesSection() {
               src={IMAGES.performance}
               alt="Ron performing with acoustic guitar"
               className="w-full rounded-sm shadow-2xl"
+              loading="lazy"
+              decoding="async"
             />
           </FadeUp>
         </div>
@@ -636,33 +662,6 @@ function TestimonialsSection() {
             </FadeUp>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Flyer Section ────────────────────────────────────────────
-function FlyerSection() {
-  return (
-    <section className="py-24 bg-[oklch(0.97_0.015_75)]">
-      <div className="container">
-        <FadeUp className="text-center mb-12">
-          <p className="section-label mb-3">Upcoming Gigs</p>
-          <h2 className="font-display text-4xl md:text-5xl text-[oklch(0.22_0.05_35)] leading-tight mb-4">
-            Event Flyer
-          </h2>
-          <div className="golden-divider max-w-[80px] mx-auto mb-6" />
-        </FadeUp>
-
-        <FadeUp className="flex justify-center">
-          <div className="max-w-2xl w-full">
-            <img
-              src={IMAGES.flyer}
-              alt="R & R upcoming shows flyer"
-              className="w-full rounded-sm shadow-2xl border-4 border-[oklch(0.68_0.15_65)]"
-            />
-          </div>
-        </FadeUp>
       </div>
     </section>
   );
@@ -989,7 +988,6 @@ export default function Home() {
         <TestimonialsSection />
         <CalendarSection />
         <ServicesSection />
-        <FlyerSection />
         <ContactSection />
       </main>
 

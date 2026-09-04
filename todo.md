@@ -11,3 +11,6 @@
 - [x] Generate new flyer for May 30 Crave Wine Co show
 - [x] Export the current R&R Acoustic Duo website to a new private GitHub repository
 - [ ] Prepare a Cloudflare Pages-compatible deployment configuration and guide
+- [x] Remove expired upcoming show entries automatically based on Pacific calendar dates
+- [x] Remove the completed P&V Winery June 7 event flyer
+- [x] Defer noncritical images and video metadata to improve initial page loading without changing other content
